@@ -1,0 +1,9 @@
+{
+    "info": {
+        "rpgname": "As Crônicas das Sombras",
+        "rpgacronym": "ACDS"
+    },
+    "encryption": {
+        "saltRounds": 10
+    }
+}

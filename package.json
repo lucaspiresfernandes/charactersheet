@@ -1,0 +1,29 @@
+{
+  "name": "charactersheet",
+  "version": "1.0.0",
+  "description": "RPG Character Sheet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lunapiresfernandescefet/charactersheet.git"
+  },
+  "keywords": [],
+  "author": "Luna Fernandes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lunapiresfernandescefet/charactersheet/issues"
+  },
+  "homepage": "https://github.com/lunapiresfernandescefet/charactersheet#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "hbs": "^4.1.2",
+    "knex": "^0.95.7",
+    "mysql": "^2.18.1"
+  }
+}
