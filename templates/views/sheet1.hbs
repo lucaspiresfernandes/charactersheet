@@ -46,7 +46,7 @@
                             data-bs-target="#generalDiceRoll">
                     </div>
                 </div>
-                <div class="row my-3">
+                <div class="row my-3 px-4">
                     {{> attributes}}
                 </div>
                 <div class="row my-3 text-center">
@@ -68,8 +68,8 @@
         <div class="row my-3 acds-container">
             <div class="col px-4">
                 <div class="row mt-3">
-                    <div class="col offset-4 h2 text-center">Combate</div>
-                    <div class="col text-end">
+                    <div class="col offset-1 h2 text-center">Combate</div>
+                    <div class="col-1 text-end">
                         <input type="button" value="+" class="acds-element" style="border: solid 1px;"
                             data-bs-toggle="modal" data-bs-target="#addEquipment" />
                     </div>
@@ -104,8 +104,8 @@
         <div class="row my-3 acds-container">
             <div class="col px-4">
                 <div class="row mt-3">
-                    <div class="col offset-4 h2 text-center">Perícias</div>
-                    <div class="col text-end">
+                    <div class="col offset-1 h2 text-center">Perícias</div>
+                    <div class="col-1 text-end">
                         <input type="button" value="+" class="acds-element" style="border: solid 1px;"
                             data-bs-toggle="modal" data-bs-target="#addSkill" />
                     </div>
@@ -126,8 +126,8 @@
         <div class="row my-3 acds-container">
             <div class="col px-4">
                 <div class="row mt-3">
-                    <div class="col offset-4 h2 text-center">Inventário</div>
-                    <div class="col text-end">
+                    <div class="col offset-1 h2 text-center">Inventário</div>
+                    <div class="col-1 text-end">
                         <input type="button" value="+" class="acds-element" style="border: solid 1px;"
                             data-bs-toggle="modal" data-bs-target="#addItem" />
                     </div>
@@ -150,7 +150,7 @@
 
     <div>
         {{> failuretoast}}
-
+        
         <!--Dice Roll Result-->
         <div class="modal fade" id="diceRoll" tabindex="-1" aria-labelledby="diceRollLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

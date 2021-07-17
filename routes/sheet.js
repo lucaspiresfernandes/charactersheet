@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const con = require('../utils/connection');
 var urlParser = bodyParser.urlencoded({extended: false});
 
-router.get('/1', async(req, res) =>
+router.get('/1', async (req, res) =>
 {
     let playerID = req.session.playerID;
 
@@ -127,7 +127,7 @@ router.get('/1', async(req, res) =>
             .where('player_item.player_id', playerID),
 
         //Available Items: 9
-        con.select('item_id, name')
+        con.select('item_id', 'name')
             .from('item')
             .whereNotIn('item_id', availableItemsSubQuery)
             .orderBy('name'),
@@ -284,6 +284,404 @@ router.get('/admin', async (req, res) =>
     }
     
     res.render('sheetadmin', {characters: characters});
+});
+
+router.post('/player/info', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let infoID = req.body.infoID;
+    let value = req.body.value;
+
+    try
+    {
+        await con.update('player_info')
+        .set('value', value)
+        .where('player_id', playerID)
+        .andWhere('info_id', infoID);
+
+        io.emit('info changed', {playerID, infoID, value});
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/attribute', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let attrID = req.body.attributeID;
+    let value = req.body.value;
+    let maxValue = req.body.maxValue;
+
+    try
+    {
+        await con.update('player_attribute')
+        .set({'value': value, 'max_value': maxValue})
+        .where('player_id', playerID)
+        .andWhere('attribute_id', attrID);
+
+        io.emit('attribute changed', {playerID, attributeID: attrID, value, maxValue});
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/attributestatus', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let attrStatusID = req.body.attributeStatusID;
+    let checked = req.body.checked === 'true' ? true : false;
+
+    try
+    {
+        await con.update('player_attribute_status')
+        .set('value', checked)
+        .where('player_id', playerID)
+        .andWhere('attribute_status_id', attrStatusID);
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/spec', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let specID = req.body.specID;
+    let value = req.body.value;
+
+    try
+    {
+        await con.update('player_spec')
+        .set('value', value)
+        .where('player_id', playerID)
+        .andWhere('spec_id', specID);
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/characteristic', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let charID = req.body.characteristicID;
+    let value = req.body.value;
+
+    try
+    {
+        await con.update('player_characteristic')
+        .set('value', value)
+        .where('player_id', playerID)
+        .andWhere('characteristic_id', charID);
+
+        io.emit('char changed', {playerID, charID, value});
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.put('/player/equipment', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let equipmentID = req.body.equipmentID;
+
+    try
+    {
+        await con.insert(
+        {
+            'playerID': playerID, 
+            'equipmentID': equipmentID, 
+            'current_ammo': '-', 
+            'using': false
+        }).into('player_equipment');
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/equipment', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let equipmentID = req.body.equipmentID;
+    let using = req.body.using === 'true' ? true : false;
+    let currentAmmo = req.body.currentAmmo;
+
+    try
+    {
+        await con.update('player_equipment')
+        .set({'using': using, 'current_ammo': currentAmmo})
+        .where('player_id', playerID)
+        .andWhere('equipment_id', equipmentID);
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.delete('/player/equipment', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let equipmentID = req.body.equipmentID;
+
+    try
+    {
+        await con('player_equipment')
+        .where('player_id', playerID)
+        .andWhere('equipment_id', equipmentID)
+        .del();
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.put('/equipment', urlParser, async (req, res) =>
+{
+    let name = req.body.name;
+    let skillID = req.body.skillID;
+    let dmg = req.body.damage;
+    let range = req.body.range;
+    let atk = req.body.attacks;
+    let ammo = req.body.ammo;
+    let malf = req.body.malf;
+
+    try
+    {
+        let equip = await con.insert(
+        {
+            'name': name,
+            'skill_id': skillID,
+            'damage': dmg,
+            'range': range,
+            'attacks': atk,
+            'ammo': ammo,
+            'malfunc': malf
+        }).into('equipment');
+        let equipmentID = equip[0];
+
+        res.send({equipmentID});
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+
+    let sql = "INSERT INTO equipment (name, skill_id, damage, equipment.range, attacks, ammo, malfunc) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    let post = [name, skillID, dmg, range, atk, ammo, malf];
+
+    let code = 200;
+    let result;
+    result = await db.promiseQuery(sql, post).catch(err => {code = 500, result = err; console.log(err);});
+    res.status(code).send(result);
+});
+
+router.put('/player/skill', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let skillID = req.body.skillID;
+
+    try
+    {
+        const subquery = con.select('start_value').from('skill').where('skill_id', skillID);
+        await con.insert({'player_id': playerID, 'skill_id': skillID, 'value': 0, 'checked': subquery})
+        .into('player_skill');
+
+        res.send('OK')
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/skill', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let skillID = req.body.skillID;
+    let value = req.body.value;
+    let checked = req.body.checked === 'true' ? true : false;
+
+    try
+    {
+        await con.update('player_skill')
+        .set({'value': value, 'checked': checked})
+        .where('player_id', playerID)
+        .andWhere('skill_id', skillID);
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.put('/skill', urlParser, async (req, res)  =>
+{
+    let specID = req.body.specializationID;
+    if (specID === '')
+        specID = null;
+    let skillName = req.body.skillName;
+
+    try
+    {
+        let skill = await con.insert(
+        {
+            'specialization_id': specID, 
+            'name': skillName, 
+            'mandatory': false, 
+            'start_value': 0
+        })
+        .into('skill');
+        let skillID = skill[0];
+
+        res.send({skillID});
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.post('/player/finance', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let financeID = req.body.financeID;
+    let value = req.body.value;
+
+    try
+    {
+        await con.update('player_finance')
+        .set('value', value)
+        .where('player_id', playerID)
+        .andWhere('finance_id', financeID);
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.put('/player/item', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let itemID = req.body.itemID;
+
+    try
+    {
+        const subquery = con.select('description').from('item').where('item_id', itemID);
+        await con.insert(
+        {
+            'player_id': playerID, 
+            'item_id': itemID, 
+            'description': subquery
+        })
+        .into('player_item');
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+
+    try
+    {
+        const query = await com.select('name').from('item').where('item_id', itemID).first();
+        let name = query.name;
+        io.emit('new item', {playerID, itemID, name});
+    }
+    catch (err)
+    {
+        console.log('Could not call new item event.');
+        console.log(err);
+    }
+});
+
+router.post('/player/item', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let itemID = req.body.itemID;
+    let description = req.body.description;
+
+    try
+    {
+        await con.update('player_item')
+        .set('description', description)
+        .where('player_id', playerID)
+        .andWhere('item_id', itemID);
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.delete('/player/item', urlParser, async (req, res) =>
+{
+    let playerID = req.session.playerID;
+    let itemID = req.body.itemID;
+
+    try
+    {
+        await con('player_item')
+        .where('player_id', playerID)
+        .andWhere('item_id', itemID)
+        .del();
+        
+        io.emit('delete item', {playerID, itemID});
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
+});
+
+router.put('/item', urlParser, async (req, res) =>
+{
+    let name = req.body.name;
+    let desc = req.body.description;
+
+    try
+    {
+        await con.insert({'name': name, 'description': desc}).into('item');
+
+        res.send('OK');
+    }
+    catch (err)
+    {
+        res.status(500).send({err});
+    }
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@
 <div class="col my-3">
     <div class="row">
         <div class="col">
-            <img id="diceCharacteristic-{{characteristic_id}}" class="img-fluid acds-clickable" src="/assets/dice.png"
+            <img id="diceCharacteristic{{characteristic_id}}" class="img-fluid acds-clickable" src="/assets/dice.png"
                 style="max-height: 40px;" {{#if rollable}}
                 onclick="characteristicDiceClick(event, {{characteristic_id}}))" {{/if}}>
         </div>
@@ -12,7 +12,7 @@
         <div class="col">{{name}}</div>
     </div>
     <div class="row">
-        <div class="col"><input class="acds-element" type="text" id="characteristic-{{characteristic_id}}"
+        <div class="col"><input class="acds-element" type="text" id="characteristic{{characteristic_id}}"
                 value="{{value}}"
                 style="outline: 0; border-width: 0 0 1px; text-align: center; max-width: 120px; font-size: 25px;"
                 onchange="characteristicChange(event, {{characteristic_id}})">

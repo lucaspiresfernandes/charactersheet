@@ -8,29 +8,31 @@
         <div class="col">
             <div class="progress acds-clickable" style="height: 40px; background-color: #{{bg_color}};"
                 onclick="attributeBarClick(event, {{attribute_id}})">
-                <div id="attributeBar-{{attribute_id}}" class="progress-bar" role="progressbar"
-                    aria-valuenow="{{value}}" aria-valuemin="0" aria-valuemax="{{max_value}}"
+                <div id="attributeBar{{attribute_id}}" class="progress-bar" role="progressbar" aria-valuenow="{{value}}"
+                    aria-valuemin="0" aria-valuemax="{{max_value}}"
                     style="background-color: #{{fill_color}}; width: {{coeficient}}%;"></div>
             </div>
         </div>
         {{#if rollable}}
-        <div class="col-sm-1">
-            <img id="attributeDice-{{attribute_id}}" class="acds-clickable d-flex align-self-center"
-                onclick="attributeDiceClick(event, {{attribute_id}})" src="/assets/dice.png" style="max-height: 40px;">
+        <div class="col-1 align-self-center">
+            <img id="attributeDice{{attribute_id}}" class="acds-clickable"
+                onclick="attributeDiceClick(event, {{attribute_id}})" src="/assets/dice.png"
+                {{!Just a little hack.}}
+                style="max-height: 35px; position: relative; right: 10px;">
         </div>
         {{/if}}
     </div>
     <div class="row text-center my-2" {{#if rollable}} style="width: 85%" {{/if}}>
         <div class="col">
-            <input id="attributeIncrease-{{attribute_id}}" type="button" value="+"
+            <input id="attributeIncrease{{attribute_id}}" type="button" value="+"
                 onclick="attributeIncreaseClick(event, {{attribute_id}})" class="acds-element"
                 style="border: solid 1px; width: 75px" />
         </div>
-        <div id="attributeDesc-{{attribute_id}}" class="col" style="font-size: 22px;">
+        <div id="attributeDesc{{attribute_id}}" class="col" style="font-size: 22px;">
             {{value}}/{{max_value}}
         </div>
         <div class="col">
-            <input id="attributeDecrease-{{attribute_id}}" type="button" value="-"
+            <input id="attributeDecrease{{attribute_id}}" type="button" value="-"
                 onclick="attributeDecreaseClick(event, {{attribute_id}})" class="acds-element"
                 style="border: solid 1px; width: 75px" />
         </div>
@@ -41,7 +43,7 @@
     {{#each status}}
     {{#with this}}
     <div class="col form-check">
-        <input class="form-check-input" type="checkbox" value="" id="status-{{attribute_status_id}}"
+        <input class="form-check-input" type="checkbox" value="" id="status{{attribute_status_id}}"
             onchange="attributeStatusChange({{attribute_status_id}}, this)" {{checked}}>
         <label class="form-check-label" for="status-{{attribute_status_id}}">{{name}}</label>
     </div>

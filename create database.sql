@@ -330,24 +330,24 @@ CREATE TABLE `player_extra_info` (
     CONSTRAINT `fk_player_extra_info_extra_info_id` FOREIGN KEY (`extra_info_id`) REFERENCES `extra_info`(`extra_info_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE `finances` (
-    `finances_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `finance` (
+    `finance_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
-    PRIMARY KEY (`finances_id`)
+    PRIMARY KEY (`finance_id`)
 );
 
-INSERT INTO `finances` (`name`) VALUES ('Nível de Gasto Diário');
-INSERT INTO `finances` (`name`) VALUES ('Dinheiro');
+INSERT INTO `finance` (`name`) VALUES ('Nível de Gasto Diário');
+INSERT INTO `finance` (`name`) VALUES ('Dinheiro');
 
-CREATE TABLE `player_finances` (
-    `player_finances_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `player_finance` (
+    `player_finance_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `player_id` int(11) UNSIGNED NOT NULL,
-    `finances_id` int(11) UNSIGNED NOT NULL,
+    `finance_id` int(11) UNSIGNED NOT NULL,
     `value` MEDIUMTEXT NOT NULL,
-    PRIMARY KEY (`player_finances_id`),
-    CONSTRAINT `uk_player_id_finances_id` UNIQUE (`player_id`, `finances_id`),
-    CONSTRAINT `fk_player_finances_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_player_finances_finances_id` FOREIGN KEY (`finances_id`) REFERENCES `finances`(`finances_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY (`player_finance_id`),
+    CONSTRAINT `uk_player_id_finance_id` UNIQUE (`player_id`, `finance_id`),
+    CONSTRAINT `fk_player_finance_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_player_finance_finance_id` FOREIGN KEY (`finance_id`) REFERENCES `finance`(`finance_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `admin_key`

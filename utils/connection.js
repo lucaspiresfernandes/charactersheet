@@ -1,4 +1,3 @@
-//const mysql = require('mysql');
 const knex = require('knex')(
 {
     client: 'mysql',
