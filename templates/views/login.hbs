@@ -24,8 +24,16 @@
 
         function onLoginSuccess(data)
         {
-            let id = data.playerID;
-            console.log(id);
+            let admin = data.admin;
+            
+            const success = document.createElement('p');
+            $(success).css('color', 'green');
+            $(success).css('font-size', 24);
+            $(success).text(`Logado com sucesso! Redirecionando para a ficha...`);
+            $('body').append(success);
+            
+            let url = admin ? '/sheet/admin' : '/sheet/1';
+            window.location.replace(url);
         }
 
         function onLoginFail(err)
@@ -44,7 +52,7 @@
                 error.fadeOut(2000, () => error.remove());
             }, 500);
 
-            console.error(`Server: ${err}`);
+            console.error(err);
 
             loginForm.show();
         }
@@ -55,8 +63,11 @@
 
             loginForm.hide();
 
+            const pass = $('#password');
+
             const username = $('#username').val();
-            const password = $('#password').val();
+            const password = pass.val();
+            pass.val('')
 
             $.ajax('/login',
             {

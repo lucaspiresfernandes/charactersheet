@@ -1,0 +1,15 @@
+{{#each info}}
+{{#with this}}
+<div class="row my-4">
+    <div class="row">
+        <div class="col mx-2"><label for="info-{{info_id}}">{{name}}</label></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <input class="acds-element acds-bottom-text" type="text" id="info-{{info_id}}" value="{{value}}"
+                onchange="infoChange(event, {{info_id}})">
+        </div>
+    </div>
+</div>
+{{/with}}
+{{/each}}

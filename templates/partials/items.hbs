@@ -1,0 +1,22 @@
+{{#if items}}
+{{#each items}}
+{{#with this}}
+<div class="row my-2 ms-1 p-2" style="border: solid 1px gray; border-radius: 20px; ">
+    <div class="col">
+        <button class="acds-element" onclick="deleteItem(event, {{item_id}});"><i class="bi bi-trash"></i></button>
+    </div>
+    <div class="col-sm align-self-center" style="max-width: 100px;">
+        <div id="itemName{{item_id}}" class="col-auto acds-element">
+            {{name}}
+        </div>
+    </div>
+    <div class="col-sm align-self-center" style="max-width: 250px;">
+        <input id="itemDescription{{item_id}}" class="acds-element" type="text" value="{{description}}"
+        style="max-width: 50px; border: none;" onchange="itemDescriptionChange(event, {{item_id}})">
+    </div>
+</div>
+{{/with}}
+{{/each}}
+{{else}}
+<div class="col my-3 text-center" style="color: gray;">Você não possui itens</div>
+{{/if}}

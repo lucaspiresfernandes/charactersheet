@@ -3,8 +3,6 @@ const config = require('../config.json');
 
 exports.registerHelpers = () =>
 {
-    hbs.registerHelper('rpgname', options =>
-    {
-        return config.info.rpgname;
-    });
+    hbs.registerHelper('rpgname', () => config.info.rpgname);
+    hbs.registerHelper('playerrole', () => config.info.playerrole);
 };

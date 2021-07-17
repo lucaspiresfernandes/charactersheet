@@ -2,22 +2,12 @@ create database charactersheet;
 
 use charactersheet;
 
-CREATE TABLE `player_type` (
-    `player_type_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL,
-    PRIMARY KEY (`player_type_id`)
-);
-
-INSERT INTO `player_type` (`name`) VALUES ('admin');
-INSERT INTO `player_type` (`name`) VALUES ('player');
-
 CREATE TABLE `player` (
     `player_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_type_id` int(11) UNSIGNED NOT NULL,
     `username` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
-    PRIMARY KEY (`player_id`),
-    CONSTRAINT `fk_player_player_type_id` FOREIGN KEY (`player_type_id`) REFERENCES `player_type`(`player_type_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    `admin` BOOLEAN NOT NULL,
+    PRIMARY KEY (`player_id`)
 );
 
 CREATE TABLE `characteristic` (
@@ -61,7 +51,6 @@ INSERT INTO `specialization` (`name`) VALUES ('Língua');
 INSERT INTO `specialization` (`name`) VALUES ('Lutar');
 INSERT INTO `specialization` (`name`) VALUES ('Pilotar');
 INSERT INTO `specialization` (`name`) VALUES ('Sobrevivência');
-
 
 CREATE TABLE `skill` (
     `skill_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -227,6 +216,8 @@ CREATE TABLE `equipment` (
     CONSTRAINT `fk_equipment_skill_id` FOREIGN KEY (`skill_id`) REFERENCES `skill` (`skill_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+#--Create equipments.
+
 INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('Desarmado', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+DB', '-', '1(2)', '-', '-');
 INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('Soco Inglês', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d4+1+DB', '-', '1(2)', '-', '-');
 INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('Revólver .41', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10', '20 metros', '1(3)', '8', '100');
@@ -274,10 +265,13 @@ CREATE TABLE `item` (
     PRIMARY KEY (`item_id`)
 );
 
+#--Create items.
+
 CREATE TABLE `player_item` (
     `player_item_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `player_id` int(11) UNSIGNED NOT NULL,
     `item_id` int(11) UNSIGNED NOT NULL,
+    `description` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`player_item_id`),
     CONSTRAINT `uk_player_id_item_id` UNIQUE (`player_id`, `item_id`),
     CONSTRAINT `fk_player_item_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -299,15 +293,6 @@ INSERT INTO `info` (`name`) VALUES ('Residência');
 INSERT INTO `info` (`name`) VALUES ('Local de Nascimento');
 INSERT INTO `info` (`name`) VALUES ('Peso');
 INSERT INTO `info` (`name`) VALUES ('Altura');
-INSERT INTO `info` (`name`) VALUES ('Nível de Gasto Diário');
-INSERT INTO `info` (`name`) VALUES ('Dinheiro');
-INSERT INTO `info` (`name`) VALUES ('Patrimônio e Posses');
-INSERT INTO `info` (`name`) VALUES ('Magias');
-INSERT INTO `info` (`name`) VALUES ('Personalidade');
-INSERT INTO `info` (`name`) VALUES ('Backstory');
-INSERT INTO `info` (`name`) VALUES ('Itens, Pessoas e Locais Importantes');
-INSERT INTO `info` (`name`) VALUES ('Fobias e Manias');
-INSERT INTO `info` (`name`) VALUES ('Notas');
 
 CREATE TABLE `player_info` (
     `player_info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -320,10 +305,55 @@ CREATE TABLE `player_info` (
     CONSTRAINT `fk_player_info_info_id` FOREIGN KEY (`info_id`) REFERENCES `info`(`info_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE `admin_key`
-(
-    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY (`id`)
+CREATE TABLE `extra_info` (
+    `extra_info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    PRIMARY KEY (`extra_info_id`)
 );
 
-INSERT INTO `admin_key` (`id`) VALUES (123456);
+INSERT INTO `extra_info` (`name`) VALUES ('Patrimônio e Posses');
+INSERT INTO `extra_info` (`name`) VALUES ('Magias');
+INSERT INTO `extra_info` (`name`) VALUES ('Personalidade');
+INSERT INTO `extra_info` (`name`) VALUES ('Backstory');
+INSERT INTO `extra_info` (`name`) VALUES ('Itens, Pessoas e Locais Importantes');
+INSERT INTO `extra_info` (`name`) VALUES ('Fobias e Manias');
+INSERT INTO `extra_info` (`name`) VALUES ('Notas');
+
+CREATE TABLE `player_extra_info` (
+    `player_extra_info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` int(11) UNSIGNED NOT NULL,
+    `extra_info_id` int(11) UNSIGNED NOT NULL,
+    `value` MEDIUMTEXT NOT NULL,
+    PRIMARY KEY (`player_extra_info_id`),
+    CONSTRAINT `uk_player_id_extra_info_id` UNIQUE (`player_id`, `extra_info_id`),
+    CONSTRAINT `fk_player_extra_info_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_player_extra_info_extra_info_id` FOREIGN KEY (`extra_info_id`) REFERENCES `extra_info`(`extra_info_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE `finances` (
+    `finances_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    PRIMARY KEY (`finances_id`)
+);
+
+INSERT INTO `finances` (`name`) VALUES ('Nível de Gasto Diário');
+INSERT INTO `finances` (`name`) VALUES ('Dinheiro');
+
+CREATE TABLE `player_finances` (
+    `player_finances_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` int(11) UNSIGNED NOT NULL,
+    `finances_id` int(11) UNSIGNED NOT NULL,
+    `value` MEDIUMTEXT NOT NULL,
+    PRIMARY KEY (`player_finances_id`),
+    CONSTRAINT `uk_player_id_finances_id` UNIQUE (`player_id`, `finances_id`),
+    CONSTRAINT `fk_player_finances_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_player_finances_finances_id` FOREIGN KEY (`finances_id`) REFERENCES `finances`(`finances_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE `admin_key`
+(
+    `key` int(11) UNSIGNED NOT NULL,
+    PRIMARY KEY (`key`)
+);
+
+INSERT INTO `admin_key` (`key`) VALUES (123456);

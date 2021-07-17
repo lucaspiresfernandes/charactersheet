@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="/assets/icon.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Cinzel:wght@500&display=swap"
+        rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <title>{{rpgname}}</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row h1 text-center d-flex justify-content-center mt-3">
+            <div class="col">Perfil de {{playerrole}}</div>
+        </div>
+        <div class="row my-3">
+            <div class="col acds-container">
+                <div class="row h2 mt-4">
+                    <div class="col d-flex justify-content-center">Detalhes Pessoais</div>
+                </div>
+                <hr>
+                {{> info}}
+            </div>
+            <div class="col mt-3">
+                <div class="row justify-content-evenly">
+                    <div class="col-6">
+                        <img id="avatar" class="img-fluid rounded-circle acds-clickable"
+                            style="border: solid 1px white; max-height: 255px; min-width: 100px; min-height: 100px;"
+                            data-bs-toggle="modal" data-bs-target="#uploadAvatar">
+                    </div>
+                    <div class="col-2 align-self-center">
+                        <img class="img-fluid acds-clickable" src="/assets/dice.png" data-bs-toggle="modal"
+                            data-bs-target="#generalDiceRoll">
+                    </div>
+                </div>
+                <div class="row my-3">
+                    {{> attributes}}
+                </div>
+                <div class="row my-3 text-center">
+                    {{> specs}}
+                </div>
+            </div>
+        </div>
+        <div class="row my-3 acds-container">
+            <div class="col px-4">
+                <div class="row mt-3 text-center">
+                    <div class="col h2">Características</div>
+                    <hr>
+                </div>
+                <div class="row text-center">
+                    {{> characteristics}}
+                </div>
+            </div>
+        </div>
+        <div class="row my-3 acds-container">
+            <div class="col px-4">
+                <div class="row mt-3">
+                    <div class="col offset-4 h2 text-center">Combate</div>
+                    <div class="col text-end">
+                        <input type="button" value="+" class="acds-element" style="border: solid 1px;"
+                            data-bs-toggle="modal" data-bs-target="#addEquipment" />
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <table class="table table-dark" style="--bs-table-bg: black">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Usando</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Dano</th>
+                                    <th scope="col"></th>
+                                    <th scope="col">Alcance</th>
+                                    <th scope="col">Ataques</th>
+                                    <th scope="col">Mun. Atual</th>
+                                    <th scope="col">Mun. Máxima</th>
+                                    <th scope="col">Defeito</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equipmentTable">
+                                {{> equipments}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-3 acds-container">
+            <div class="col px-4">
+                <div class="row mt-3">
+                    <div class="col offset-4 h2 text-center">Perícias</div>
+                    <div class="col text-end">
+                        <input type="button" value="+" class="acds-element" style="border: solid 1px;"
+                            data-bs-toggle="modal" data-bs-target="#addSkill" />
+                    </div>
+                    <hr>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input type="search" id="skillSearchBar" class="form-control acds-element mb-3"
+                            placeholder="Procurar" style="background-color: black !important; color: white !important"
+                            oninput="skillSearchBarInput(event);" />
+                    </div>
+                </div>
+                <div class="row text-center">
+                    {{> skills}}
+                </div>
+            </div>
+        </div>
+        <div class="row my-3 acds-container">
+            <div class="col px-4">
+                <div class="row mt-3">
+                    <div class="col offset-4 h2 text-center">Inventário</div>
+                    <div class="col text-end">
+                        <input type="button" value="+" class="acds-element" style="border: solid 1px;"
+                            data-bs-toggle="modal" data-bs-target="#addItem" />
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            <div class="row text-center">
+                {{> finances}}
+            </div>
+            <div class="row my-3">
+                {{> items}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-end">
+                <a href="/sheet/2" style="font-size: 21px;">Acessar 2° Página</a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {{> failuretoast}}
+
+        <!--Dice Roll Result-->
+        <div class="modal fade" id="diceRoll" tabindex="-1" aria-labelledby="diceRollLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Resultado da
+                            Rolagem</h5>
+                    </div>
+                    <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
+                        <div class="row">
+                            <div class="col">
+                                <div id="loader" style="position: relative; top: 75px;"></div>
+                            </div>
+                        </div>
+                        <!--Dice Result-->
+                        <div class="row">
+                            <div class="col">
+                                <div id="diceResultContent" class="animate-bottom"
+                                    style="display: none; font-size: 48px;">
+                                </div>
+                            </div>
+                        </div>
+                        <!--Success Type-->
+                        <div class="row">
+                            <div class="col">
+                                <div id="diceResultSuccess" class="animate-bottom"
+                                    style="display: none; font-size: 16px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="background-color: black; border: none;">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Selective dice roll-->
+        <div class="modal fade" id="generalDiceRoll" tabindex="-1" aria-labelledby="generalDiceRollLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Dado Personalizado</h5>
+                    </div>
+                    <form onsubmit="generalDiceClick(event)">
+                        <div class="modal-body text-center"
+                            style="background-color: black; border: none; height: 100px;">
+                            <div class="row">
+                                <div class="col">
+                                    <input id="generalDiceText" type="text" placeholder="Dado" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <input type="submit" class="btn btn-primary" value="Rolar" />
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="uploadAvatar" tabindex="-1" aria-labelledby="uploadAvatarLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Atualizar Avatar</h5>
+                    </div>
+                    <form onsubmit="uploadAvatar(event);">
+                        <div id="uploadAvatarBody" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            <div class="row my-3">
+                                <div class="row">
+                                    <div class="col">
+                                        Avatar Normal:
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="defAvatarFile" type="file" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="row">
+                                    <div class="col">
+                                        Avatar Inconsciente:
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="unconsciousAvatarFile" type="file" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="row">
+                                    <div class="col">
+                                        Avatar Ferido:
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="mwAvatarFile" type="file" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="row">
+                                    <div class="col">
+                                        Avatar Louco:
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="insaneAvatarFile" type="file" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="row">
+                                    <div class="col">
+                                        Avatar Ferido e Louco:
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="mwinsaneAvatarFile" type="file" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="createSkill" tabindex="-1" aria-labelledby="createSkillLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Criar Perícia Personalizada</h5>
+                    </div>
+                    <form onsubmit="createSkill(event);">
+                        <div id="createSkillBody" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createSkillName" type="text" placeholder="Nome da Perícia" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="skillSpecializationList">Especialização</label>
+                                    <select id="createSkillSpecializationList" class="form-select acds-element my-2">
+                                        <option value="0" selected>Nenhum</option>
+                                        {{#each specializations}}
+                                        {{#with this}}
+                                        <option value="{{specialization_id}}">{{name}}</option>
+                                        {{/with}}
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Criar</button>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="createEquipment" tabindex="-1" aria-labelledby="createEquipmentLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Criar Novo Equipamento</h5>
+                    </div>
+                    <form onsubmit="createEquipment(event);">
+                        <div id="createEquipmentBody" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createEquipmentName" type="text" placeholder="Nome" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createEquipmentDamage" type="text" placeholder="Dano" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createEquipmentRange" type="text" placeholder="Alcance" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createEquipmentAttacks" type="text" placeholder="Ataques" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createEquipmentAmmo" type="text" placeholder="Munição" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createEquipmentMalf" type="text" placeholder="Defeito" class="my-2"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="combatSpecializationList">Especialização</label>
+                                    <select id="combatSpecializationList" class="form-select acds-element my-2">
+                                        {{#each combatSpecializations}}
+                                        {{#with this}}
+                                        <option value="{{skill_id}}">{{name}}</option>
+                                        {{/with}}
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="submit" class="btn btn-primary" value="Criar">
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="createItem" tabindex="-1" aria-labelledby="createItemLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Criar Novo Item</h5>
+                    </div>
+                    <form onsubmit="createItem(event);">
+                        <div id="createItemBody" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <input id="createItemName" type="text" placeholder="Nome" class="my-2" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <textarea class="acds-element form-control" id="createItemDescription"
+                                        placeholder="Descrição" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="submit" class="btn btn-primary" value="Criar">
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--Add Equipment Modal-->
+        <div class="modal fade" id="addEquipment" tabindex="-1" aria-labelledby="addEquipmentLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Adicionar Equipamento</h5>
+                    </div>
+                    <form onsubmit="addEquipment(event, document.getElementById('addEquipmentList'));">
+                        <div id="addEquipmentBody" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            {{#if availableEquipments}}
+                            <select id="addEquipmentList" class="form-select acds-element">
+                                {{#each availableEquipments}}
+                                {{#with this}}
+                                <option value="{{equipment_id}}">{{name}}</option>
+                                {{/with}}
+                                {{/each}}
+                            </select>
+                            {{else}}
+                            <div class="row">
+                                <div class="col">Você já possui todos os equipamentos disponíveis.</div>
+                            </div>
+                            {{/if}}
+                        </div>
+                        <div id="addEquipmentFooter" class="modal-footer"
+                            style="background-color: black; border: none;">
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal" data-bs-toggle="modal"
+                                data-bs-target="#createEquipment">Criar Novo
+                                Equipamento</button>
+                            <div class="row">
+                                {{#if availableEquipments}}
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                </div>
+                                {{/if}}
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--Add Skill Modal-->
+        <div class="modal fade" id="addSkill" tabindex="-1" aria-labelledby="addSkillLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Adicionar Perícia</h5>
+                    </div>
+                    <form onsubmit="addSkill(event, document.getElementById('addSkillList'));">
+                        <div id="addSkillBody" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            {{#if availableSkills}}
+                            <select id="addSkillList" class="form-select acds-element">
+                                {{#each availableSkills}}
+                                {{#with this}}
+                                <option value="{{skill_id}}">{{name}}</option>
+                                {{/with}}
+                                {{/each}}
+                            </select>
+                            {{else}}
+                            <div class="row">
+                                <div class="col">Você já possui todas as perícias disponíveis.</div>
+                            </div>
+                            {{/if}}
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal" data-bs-toggle="modal"
+                                data-bs-target="#createSkill">Criar
+                                P.P.</button>
+                            <div class="row">
+                                <div class="col">
+                                    {{#if availableSkills}}
+                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                    {{/if}}
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--Item Add Modal-->
+        <div class="modal fade" id="addItem" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: black; border: none;">
+                        <h5 class="modal-title">Adicionar Item</h5>
+                    </div>
+                    <form onsubmit="addItem(event, document.getElementById('addItemList'));">
+                        <div id="add-item-body" class="modal-body text-center"
+                            style="background-color: black; border: none;">
+                            {{#if availableItems}}
+                            <select id="addItemList" class="form-select acds-element">
+                                {{#each availableItems}}
+                                {{#with this}}
+                                <option value="{{item_id}}">{{name}}</option>
+                                {{/with}}
+                                {{/each}}
+                            </select>
+                            {{else}}
+                            <div class="row">
+                                <div class="col">Você não possui itens disponíveis.</div>
+                            </div>
+                            {{/if}}
+                        </div>
+                        <div class="modal-footer" style="background-color: black; border: none;">
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal" data-bs-toggle="modal"
+                                data-bs-target="#createItem">Criar Novo Item</button>
+                            <div class="row">
+                                <div class="col">
+                                    {{#if availableItems}}
+                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                    {{/if}}
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/sheet1.js"></script>
+</body>
+
+</html>

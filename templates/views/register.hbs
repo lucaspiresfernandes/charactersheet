@@ -82,9 +82,12 @@
                 ev.preventDefault();
 
                 registerForm.hide();
-
+                
                 const username = $('#username').val();
                 const password = pass.val();
+                pass.val('');
+                
+                confirmPass.val('');
 
                 const data = { username, password };
                 {{#if admin}}

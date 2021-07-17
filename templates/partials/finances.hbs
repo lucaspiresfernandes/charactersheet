@@ -1,0 +1,8 @@
+{{#each finances}}
+{{#with this}}
+<div class="col">
+    {{name}}: <input class="acds-element acds-bottom-text" type="text" id="finance{{finance_id}}" value="{{value}}"
+    style="outline: 0; border-width: 0 0 1px; max-width: 120px;" onchange="financeChange(event, {{info_id}})">
+</div>
+{{/with}}
+{{/each}}
