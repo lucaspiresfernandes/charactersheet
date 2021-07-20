@@ -198,19 +198,34 @@ function registerPlayerData(playerID)
         }
     });
 
-    con.select('finances_id').from('finances').then(results =>
+    con.select('finance_id').from('finance').then(results =>
     {
         for (let i = 0; i < results.length; i++)
         {
-            const finances_id = results[i].finances_id;
+            const finance_id = results[i].finance_id;
             con.insert(
                 {
                     player_id: playerID,
-                    finances_id,
+                    finance_id,
                     value: '$0'
                 })
-                .into('player_finances').then(() =>
+                .into('player_finance').then(() =>
                 {});
+        }
+    });
+
+    con.select('avatar_id').from('avatar').then(results =>
+    {
+        for (let i = 0; i < results.length; i++)
+        {
+            const avatar_id = results[i].avatar_id;
+            con.insert(
+                {
+                    player_id: playerID,
+                    avatar_id,
+                    link: null
+                })
+                .into('player_avatar').then(() => {});
         }
     });
 

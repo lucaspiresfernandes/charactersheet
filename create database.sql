@@ -350,6 +350,29 @@ CREATE TABLE `player_finance` (
     CONSTRAINT `fk_player_finance_finance_id` FOREIGN KEY (`finance_id`) REFERENCES `finance`(`finance_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE `avatar` (
+    `avatar_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    PRIMARY KEY (`avatar_id`)
+);
+
+INSERT INTO `avatar` (`name`) VALUES ('Padrão');
+INSERT INTO `avatar` (`name`) VALUES ('Inconsciente');
+INSERT INTO `avatar` (`name`) VALUES ('Ferido');
+INSERT INTO `avatar` (`name`) VALUES ('Louco');
+INSERT INTO `avatar` (`name`) VALUES ('Ferido e Louco');
+
+CREATE TABLE `player_avatar` (
+    `player_avatar_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` int(11) UNSIGNED NOT NULL,
+    `avatar_id` int(11) UNSIGNED NOT NULL,
+    `link` MEDIUMTEXT NULL,
+    PRIMARY KEY (`player_avatar_id`),
+    CONSTRAINT `uk_player_id_avatar_id` UNIQUE (`player_id`, `avatar_id`),
+    CONSTRAINT `fk_player_avatar_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_player_avatar_avatar_id` FOREIGN KEY (`avatar_id`) REFERENCES `avatar`(`avatar_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE `admin_key`
 (
     `key` int(11) UNSIGNED NOT NULL,

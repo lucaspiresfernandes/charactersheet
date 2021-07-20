@@ -30,7 +30,9 @@
                 <div class="row h2 mt-4">
                     <div class="col d-flex justify-content-center">Detalhes Pessoais</div>
                 </div>
-                {{> extrainfo}}
+                {{#each extraInfo}}
+                {{> extrainfo this}}
+                {{/each}}
             </div>
         </div>
         <div class="row">

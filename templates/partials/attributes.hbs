@@ -1,5 +1,3 @@
-{{#each attributes}}
-{{#with this}}
 <div class="col">
     <div class="row">
         <div class="col">{{name}}</div>
@@ -15,10 +13,8 @@
         </div>
         {{#if rollable}}
         <div class="col-1 align-self-center">
-            <img id="attributeDice{{attribute_id}}" class="acds-clickable"
-                onclick="attributeDiceClick(event, {{attribute_id}})" src="/assets/dice.png"
-                {{!Just a little hack.}}
-                style="max-height: 35px; position: relative; right: 10px;">
+            <img class="acds-clickable" onclick="attributeDiceClick(event, {{attribute_id}})" src="/assets/dice.png"
+                style="max-height: 35px; position: relative; right: 15px;"> {{!Just a little hack.}}
         </div>
         {{/if}}
     </div>
@@ -26,7 +22,7 @@
         <div class="col">
             <input id="attributeIncrease{{attribute_id}}" type="button" value="+"
                 onclick="attributeIncreaseClick(event, {{attribute_id}})" class="acds-element"
-                style="border: solid 1px; width: 75px" />
+                style="border: solid 1px; width: 75px">
         </div>
         <div id="attributeDesc{{attribute_id}}" class="col" style="font-size: 22px;">
             {{value}}/{{max_value}}
@@ -34,7 +30,7 @@
         <div class="col">
             <input id="attributeDecrease{{attribute_id}}" type="button" value="-"
                 onclick="attributeDecreaseClick(event, {{attribute_id}})" class="acds-element"
-                style="border: solid 1px; width: 75px" />
+                style="border: solid 1px; width: 75px">
         </div>
     </div>
 </div>
@@ -43,13 +39,12 @@
     {{#each status}}
     {{#with this}}
     <div class="col form-check">
-        <input class="form-check-input" type="checkbox" value="" id="status{{attribute_status_id}}"
-            onchange="attributeStatusChange({{attribute_status_id}}, this)" {{checked}}>
-        <label class="form-check-label" for="status-{{attribute_status_id}}">{{name}}</label>
+        <input class="form-check-input" type="checkbox" id="status{{attribute_status_id}}"
+            onchange="attributeStatusChange(event, {{attribute_status_id}})" {{checked}}>
+        <label class="form-check-label" for="status{{attribute_status_id}}">{{name}}</label>
     </div>
+    <script>stats.push($('#status' + {{ attribute_status_id }}));</script>
     {{/with}}
     {{/each}}
 </div>
 {{/if}}
-{{/with}}
-{{/each}}

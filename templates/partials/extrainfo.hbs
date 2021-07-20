@@ -1,20 +1,16 @@
-{{#each info}}
-{{#with this}}
 <div class="row my-4">
     <div class="col">
         <div class="row">
             <div class="col h4">
-                <label for="info-{{info_id}}">{{name}}</label>
+                <label for="info{{extra_info_id}}">{{name}}</label>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <textarea class="form-control acds-element" id="info{{info_id}}"
+                <textarea class="form-control acds-element" id="info{{extra_info_id}}"
                     style="background-color: black !important; color: white !important;" rows="10"
-                    onchange="infoChange(event, {{info_id}})">{{value}}</textarea>
+                    onchange="extraInfoChange(event, {{extra_info_id}})">{{value}}</textarea>
             </div>
         </div>
     </div>
 </div>
-{{/with}}
-{{/each}}

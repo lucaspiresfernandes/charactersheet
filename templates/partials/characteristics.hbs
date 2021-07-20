@@ -1,11 +1,8 @@
-{{#each characteristics}}
-{{#with this}}
 <div class="col my-3">
     <div class="row">
         <div class="col">
-            <img id="diceCharacteristic{{characteristic_id}}" class="img-fluid acds-clickable" src="/assets/dice.png"
-                style="max-height: 40px;" {{#if rollable}}
-                onclick="characteristicDiceClick(event, {{characteristic_id}}))" {{/if}}>
+            <img class="img-fluid acds-clickable" src="/assets/dice.png" style="max-height: 40px;" {{#if rollable}}
+                onclick="characteristicDiceClick(event, {{characteristic_id}})" {{/if}}>
         </div>
     </div>
     <div class="row">
@@ -19,5 +16,3 @@
         </div>
     </div>
 </div>
-{{/with}}
-{{/each}}

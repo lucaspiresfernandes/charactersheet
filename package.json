@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "hbs": "^4.1.2",
+    "hbs-utils": "^0.0.4",
     "knex": "^0.95.7",
     "mysql": "^2.18.1",
     "random-org": "^2.1.1",

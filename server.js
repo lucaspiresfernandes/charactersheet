@@ -1,10 +1,11 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const hbsutils = require('./utils/hbsutils');
+const registerHelpers = require('./utils/registerHelpers');
 const session = require('express-session');
 const { Server } = require('socket.io');
 const hbs = require('hbs');
+const hbsutils = require('hbs-utils')(hbs);
 
 const app = express();
 const server = http.createServer(app);
@@ -17,11 +18,11 @@ const publicPath = path.join(__dirname, './public');
 
 app.set('view engine', 'hbs');
 app.set('views', viewsPath);
-hbs.registerPartials(partialsPath);
+hbsutils.registerPartials(partialsPath, {precompile: true});
 app.use(express.static(publicPath));
 app.use(session({secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: false}));
 
-hbsutils.registerHelpers();
+registerHelpers();
 
 module.exports.io = io;
 
@@ -29,7 +30,6 @@ module.exports.io = io;
 const login = require('./routes/login');
 const register = require('./routes/register');
 const sheet = require('./routes/sheet');
-const admin = require('./routes/admin');
 const dice = require('./routes/dice');
 const avatar = require('./routes/avatar');
 //End Routes
@@ -42,7 +42,6 @@ app.get('/', (req, res) =>
 app.use('/register', register);
 app.use('/login', login);
 app.use('/sheet', sheet);
-app.use('/admin', admin);
 app.use('/dice', dice);
 app.use('/avatar', avatar);
 

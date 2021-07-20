@@ -1,20 +1,18 @@
-{{#each equipments}}
-{{#with this}}
-<tr>
+<tr id="equipmentRow{{equipment_id}}">
     <td>
-        <button class="acds-element" onclick="deleteEquipment(event, {{equipment_id}});"><i class="bi bi-trash"></i></button>
+        <button class="acds-element" onclick="deleteEquipmentClick(event, {{equipment_id}});"><i
+                class="bi bi-trash"></i></button>
     </td>
     <td>
-        <input id="equipmentUsing{{equipment_id}}" class="form-check-input" type="checkbox"
-            style="" onchange="equipmentUsingChange(event, {{equipment_id}});"
-            {{checked}}>
+        <input id="equipmentUsing{{equipment_id}}" class="form-check-input" type="checkbox" style=""
+            onchange="equipmentUsingChange(event, {{equipment_id}});" {{#if using}}checked{{/if}}>
     </td>
-    <td>{{name}}</td>
+    <td id="equipmentName{{equipment_id}}">{{name}}</td>
     <td>{{skill_name}}</td>
     <td id="equipmentDamage{{equipment_id}}">{{damage}}</td>
     <td>
-        <img id="equipmentDice{{equipment_id}}" class="acds-clickable align-self-center" src="/assets/dice.png"
-            style="max-height: 30px;" onclick="equipmentDiceClick(event, {{equipment_id}})">
+        <img class="acds-clickable align-self-center" src="/assets/dice.png" style="max-height: 30px;"
+            onclick="equipmentDiceClick(event, {{equipment_id}})">
     </td>
     <td>{{range}}</td>
     <td>{{attacks}}</td>
@@ -25,5 +23,3 @@
     <td id="equipmentMaxAmmo{{equipment_id}}">{{ammo}}</td>
     <td>{{malfunc}}</td>
 </tr>
-{{/with}}
-{{/each}}

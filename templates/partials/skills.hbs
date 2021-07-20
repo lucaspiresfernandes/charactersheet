@@ -1,10 +1,9 @@
-{{#each skills}}
-{{#with this}}
-<div class="col my-3 acds-clickable" style="border-radius: 20px;" onmouseover="containerMouseOver(event, {{skill_id}})">
+<div id="skillContainer{{skill_id}}" class="col my-4 acds-clickable skill-container" style="border-radius: 20px;"
+    onmouseover="containerMouseOver(event, {{skill_id}})" onmouseout="containerMouseOut(event, {{skill_id}})">
     <div class="row">
         <div class="col">
-            <input id="skillCheck{{skill_id}}" type="checkbox" class="acds-skill-check form-check-input"
-                onchange="skillCheckChange(event, {{skill_id}})" {{checked}}>
+            <input id="skillCheck{{skill_id}}" type="checkbox" class="form-check-input"
+                onchange="skillCheckChange(event, {{skill_id}})" {{#if checked}}checked{{/if}}>
         </div>
     </div>
     <div class="row">
@@ -15,9 +14,7 @@
         </div>
     </div>
     <div class="row h-75">
-        <div id="skillLabel{{skill_id}}" class="col disable-select" onclick="skillDiceClick(event, {{skill_id}})"
-            style="font-size: 16px;">{{name}}</div>
+        <div id="skillLabel{{skill_id}}" class="col disable-select skill-label"
+            onclick="skillDiceClick(event, {{skill_id}})" style="font-size: 16px;">{{name}}</div>
     </div>
 </div>
-{{/with}}
-{{/each}}
