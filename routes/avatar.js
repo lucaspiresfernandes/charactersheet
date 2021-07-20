@@ -30,7 +30,7 @@ router.post('/', jsonParser, async (req, res) =>
     {
         const id = avatars[i].avatar_id;
 
-        const obj = data[`avatar${id}`];
+        const obj = data.find(av => av.avatar_id === id);
         
         if (!obj)
             return res.status(400).send('Bad request.');
@@ -55,7 +55,7 @@ router.post('/', jsonParser, async (req, res) =>
     catch (err)
     {
         console.log(err);
-        res.status(500).send({err: err.message});
+        res.status(500).send('Internal Server Error');
     }
 });
 

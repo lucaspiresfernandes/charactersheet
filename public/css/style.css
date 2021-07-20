@@ -28,7 +28,19 @@ body {
 .form-control:focus {
     border-color: #aa2121;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #aa2121;
-  }
+}
+
+.modal-content {
+    background-color: black;
+}
+
+.modal-header {
+    border-bottom: 1px solid #222222;
+}
+
+.modal-footer {
+    border-top: 1px solid black;
+}
 
 * {
     font-family: 'Cinzel', serif;

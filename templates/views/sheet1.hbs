@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="row my-3 px-4">
-                    <script>const stats = [];</script>
+                    <script>const avatarEval = new Map();</script>
                     {{#each attributes}}
                     {{> attributes this}}
                     {{/each}}
@@ -80,18 +80,14 @@
                 <div class="row mt-3">
                     <div class="col offset-1 h2 text-center">Combate</div>
                     <div class="col-1 text-end">
-                        <input type="button" value="+" class="acds-element" style="border: solid 1px;"
-                            data-bs-toggle="modal" data-bs-target="#addEquipment" />
+                        <input type="button" value="+" class="acds-element"
+                            style="border: solid 1px; position: relative; right: 20px;" data-bs-toggle="modal"
+                            data-bs-target="#addEquipment" />
                     </div>
                     <hr>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        Armaduras
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col text-center">
+                <div class="row my-3">
+                    <div class="col table-responsive text-center">
                         <table class="table table-dark" style="--bs-table-bg: black">
                             <thead>
                                 <tr>
@@ -123,8 +119,9 @@
                 <div class="row mt-3">
                     <div class="col offset-1 h2 text-center">Perícias</div>
                     <div class="col-1 text-end">
-                        <input type="button" value="+" class="acds-element" style="border: solid 1px;"
-                            data-bs-toggle="modal" data-bs-target="#addSkill" />
+                        <input type="button" value="+" class="acds-element"
+                            style="border: solid 1px; position: relative; right: 20px;" data-bs-toggle="modal"
+                            data-bs-target="#addSkill" />
                     </div>
                     <hr>
                 </div>
@@ -147,8 +144,9 @@
                 <div class="row mt-3">
                     <div class="col offset-1 h2 text-center">Inventário</div>
                     <div class="col-1 text-end">
-                        <input type="button" value="+" class="acds-element" style="border: solid 1px;"
-                            data-bs-toggle="modal" data-bs-target="#addItem" />
+                        <input type="button" value="+" class="acds-element"
+                            style="border: solid 1px; position: relative; right: 20px;" data-bs-toggle="modal"
+                            data-bs-target="#addItem" />
                     </div>
                     <hr>
                 </div>
@@ -158,14 +156,23 @@
                 {{> finances this}}
                 {{/each}}
             </div>
-            <div id="itemTable" class="row my-3">
-                {{#if items}}
-                {{#each items}}
-                {{> items this}}
-                {{/each}}
-                {{else}}
-                <div class="col my-3 text-center" style="color: gray;">Você não possui itens</div>
-                {{/if}}
+            <div {{!id="itemTable" }} class="row my-3">
+                <div class="col table-responsive">
+                    <table class="table table-dark" style="--bs-table-bg: black">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Descrição Pessoal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemTable">
+                            {{#each items}}
+                            {{> items this}}
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -182,20 +189,22 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
+                    <div class="modal-header">
                         <h5 class="modal-title">Dado Personalizado</h5>
                     </div>
                     <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
-                        {{> loading}}
-                        <div class="container-fluid">
+                        <div class="container-fluid ">
                             <div class="row">
                                 <div class="col">
-                                    <input id="generalDiceText" type="text" autocomplete="off" placeholder="Dado" />
+                                    <form onsubmit="event.preventDefault(); generalDiceClick(event);">
+                                        <input id="generalDiceText" type="text" autocomplete="off" placeholder="Dado"
+                                            required>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
+                    <div class="modal-footer">
                         <button onclick="generalDiceClick(event)" class="btn btn-primary">Rolar</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                     </div>
@@ -206,7 +215,7 @@
         <div class="modal fade" id="diceRoll" tabindex="-1" aria-labelledby="diceRollLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
+                    <div class="modal-header">
                         <h5 class="modal-title">Resultado dos Dados</h5>
                     </div>
                     <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
@@ -225,7 +234,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                     </div>
                 </div>
@@ -236,45 +245,41 @@
             aria-labelledby="uploadAvatarLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
-                        <h5 class="modal-title">Atualizar Avatar</h5>
-                    </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
-                        {{> loading}}
-                        <div id="uploadAvatarContainer" class="container-fluid">
-                            <script>const avatars = new Map();</script>
-                            {{#each avatars}}
-                            {{#with this}}
-                            <div class="row my-3">
-                                <div class="row">
-                                    <div class="col">
-                                        Link de Avatar {{name}}:
-                                    </div>
-                                </div>
-                                <div class="row">
+                    <form onsubmit="event.preventDefault(); uploadAvatarClick(event);">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Atualizar Avatar</h5>
+                        </div>
+                        <div class="modal-body text-center">
+                            {{> loading}}
+                            <div id="uploadAvatarContainer" class="container-fluid">
+                                <script>const avatarElements = new Map();</script>
+                                {{#each avatars}}
+                                {{#with this}}
+                                <div class="row my-3">
                                     <div class="col">
                                         <input class="upload-avatar-input" id="avatarLink{{avatar_id}}" type="text"
-                                            autocomplete="off">
+                                            placeholder="Link de Avatar {{name}}" autocomplete="off"
+                                            style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif;">
                                     </div>
                                 </div>
-                            </div>
-                            <script>avatars.set({{ avatar_id }}, $('#avatarLink{{avatar_id}}'));</script>
-                            {{/with}}
-                            {{/each}}
-                        </div>
-                    </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
-                        <div class="row">
-                            <div class="col align-self-center">
-                                <button id="uploadAvatarButton" onclick="uploadAvatarClick(event)"
-                                    class="btn btn-primary">Atualizar</button>
-                            </div>
-                            <div class="col align-self-center">
-                                <button id="uploadAvatarCloseButton" type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Fechar</button>
+                                <script>avatarElements.set({{ avatar_id }}, $('#avatarLink{{avatar_id}}'));</script>
+                                {{/with}}
+                                {{/each}}
                             </div>
                         </div>
-                    </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col align-self-center">
+                                    <button id="uploadAvatarButton" type="submit"
+                                        class="btn btn-primary">Atualizar</button>
+                                </div>
+                                <div class="col align-self-center">
+                                    <button id="uploadAvatarCloseButton" type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -283,74 +288,76 @@
             data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
-                        <h5 class="modal-title">Criar Equipamento</h5>
-                    </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
-                        {{> loading}}
-                        <div id="createEquipmentContainer" class="container-fluid">
-                            <div class="row">
-                                <div class="col my-2">
-                                    <input id="createEquipmentName" type="text" autocomplete="off" placeholder="Nome"
-                                        required>
+                    <form onsubmit="event.preventDefault(); createEquipmentClick(event);">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Criar Equipamento</h5>
+                        </div>
+                        <div class="modal-body text-center">
+                            {{> loading}}
+                            <div id="createEquipmentContainer" class="container-fluid">
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <input id="createEquipmentName" type="text" autocomplete="off"
+                                            placeholder="Nome" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-2">
-                                    <input id="createEquipmentDamage" type="text" autocomplete="off" placeholder="Dano"
-                                        required>
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <input id="createEquipmentDamage" type="text" autocomplete="off"
+                                            placeholder="Dano" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-2">
-                                    <input id="createEquipmentRange" type="text" autocomplete="off"
-                                        placeholder="Alcance" required>
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <input id="createEquipmentRange" type="text" autocomplete="off"
+                                            placeholder="Alcance" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-2">
-                                    <input id="createEquipmentAttacks" type="text" autocomplete="off"
-                                        placeholder="Ataques" required>
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <input id="createEquipmentAttacks" type="text" autocomplete="off"
+                                            placeholder="Ataques" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-2">
-                                    <input id="createEquipmentAmmo" type="text" autocomplete="off" placeholder="Munição"
-                                        required>
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <input id="createEquipmentAmmo" type="text" autocomplete="off"
+                                            placeholder="Munição" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-2">
-                                    <input id="createEquipmentMalf" type="text" autocomplete="off" placeholder="Defeito"
-                                        required>
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <input id="createEquipmentMalf" type="text" autocomplete="off"
+                                            placeholder="Defeito" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-2">
-                                    <label for="combatSpecializationList">Especialização</label>
-                                    <select id="combatSpecializationList" class="form-select acds-element my-2">
-                                        {{#each combatSpecializations}}
-                                        {{#with this}}
-                                        <option value="{{skill_id}}">{{name}}</option>
-                                        {{/with}}
-                                        {{/each}}
-                                    </select>
+                                <div class="row">
+                                    <div class="col my-2">
+                                        <label for="combatSpecializationList">Especialização</label>
+                                        <select id="combatSpecializationList" class="form-select acds-element my-2">
+                                            {{#each combatSpecializations}}
+                                            {{#with this}}
+                                            <option value="{{skill_id}}">{{name}}</option>
+                                            {{/with}}
+                                            {{/each}}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
-                        <div class="row">
-                            <div class="col align-self-center">
-                                <button id="createEquipmentButton" onclick="createEquipmentClick(event)"
-                                    class="btn btn-primary">Criar</button>
-                            </div>
-                            <div class="col align-self-center">
-                                <button id="createEquipmentCloseButton" type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Fechar</button>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col align-self-center">
+                                    <button id="createEquipmentButton" type="submit"
+                                        class="btn btn-primary">Criar</button>
+                                </div>
+                                <div class="col align-self-center">
+                                    <button id="createEquipmentCloseButton" type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -359,47 +366,48 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
-                        <h5 class="modal-title">Criar Perícia</h5>
-                    </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
-                        {{> loading}}
-                        <div id="createSkillContainer" class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <input id="createSkillName" type="text" autocomplete="off"
-                                        placeholder="Nome da Perícia" class="my-2" required>
+                    <form onsubmit="event.preventDefault(); createSkillClick(event);">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Criar Perícia</h5>
+                        </div>
+                        <div class="modal-body text-center">
+                            {{> loading}}
+                            <div id="createSkillContainer" class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="createSkillName" type="text" autocomplete="off"
+                                            placeholder="Nome da Perícia" class="my-2" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="createSkillSpecialization">Especialização</label>
-                                    <select id="createSkillSpecialization" class="form-select acds-element my-2">
-                                        <option value="0" selected>Nenhum</option>
-                                        {{#each specializations}}
-                                        {{#with this}}
-                                        <option id="createSkillOption{{specialization_id}}"
-                                            value="{{specialization_id}}">
-                                            {{name}}</option>
-                                        {{/with}}
-                                        {{/each}}
-                                    </select>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="createSkillSpecialization">Especialização</label>
+                                        <select id="createSkillSpecialization" class="form-select acds-element my-2">
+                                            <option value="0" selected>Nenhum</option>
+                                            {{#each specializations}}
+                                            {{#with this}}
+                                            <option id="createSkillOption{{specialization_id}}"
+                                                value="{{specialization_id}}">
+                                                {{name}}</option>
+                                            {{/with}}
+                                            {{/each}}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
-                        <div class="row">
-                            <div class="col align-self-center">
-                                <button id="createSkillButton" onclick="createSkillClick(event)"
-                                    class="btn btn-primary">Criar</button>
-                            </div>
-                            <div class="col align-self-center">
-                                <button id="createSkillCloseButton" type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Fechar</button>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col align-self-center">
+                                    <button id="createSkillButton" type="submit" class="btn btn-primary">Criar</button>
+                                </div>
+                                <div class="col align-self-center">
+                                    <button id="createSkillCloseButton" type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -408,38 +416,39 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
-                        <h5 class="modal-title">Criar Item</h5>
-                    </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
-                        {{> loading}}
-                        <div id="createItemContainer" class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <input id="createItemName" type="text" autocomplete="off" placeholder="Nome"
-                                        class="my-2" required>
+                    <form onsubmit="event.preventDefault(); createItemClick(event);">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Criar Item</h5>
+                        </div>
+                        <div class="modal-body text-center">
+                            {{> loading}}
+                            <div id="createItemContainer" class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="createItemName" type="text" autocomplete="off" placeholder="Nome"
+                                            class="my-2" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <textarea class="acds-element form-control" id="createItemDescription"
-                                        placeholder="Descrição" rows="3"></textarea>
+                                <div class="row">
+                                    <div class="col">
+                                        <textarea class="acds-element form-control" id="createItemDescription"
+                                            placeholder="Descrição Geral" rows="3" required></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
-                        <div class="row">
-                            <div class="col align-self-center">
-                                <button id="createItemButton" onclick="createItemClick(event)"
-                                    class="btn btn-primary">Criar</button>
-                            </div>
-                            <div class="col align-self-center">
-                                <button id="createItemCloseButton" type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Fechar</button>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col align-self-center">
+                                    <button type="submit" id="createItemButton" class="btn btn-primary">Criar</button>
+                                </div>
+                                <div class="col align-self-center">
+                                    <button id="createItemCloseButton" type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Fechar</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -448,10 +457,10 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
+                    <div class="modal-header">
                         <h5 class="modal-title">Adicionar Equipamento</h5>
                     </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
+                    <div class="modal-body text-center">
                         {{> loading}}
                         <div id="addEquipmentContainer" class="container-fluid">
                             <select id="addEquipmentList" class="form-select acds-element">
@@ -465,7 +474,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
+                    <div class="modal-footer">
                         <div class="row">
                             <div class="col align-self-center">
                                 <button id="addEquipmentCreate" type="button" class="btn btn-info"
@@ -491,10 +500,10 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
+                    <div class="modal-header">
                         <h5 class="modal-title">Adicionar Perícia</h5>
                     </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
+                    <div class="modal-body text-center">
                         {{> loading}}
                         <div id="addSkillContainer" class="container-fluid">
                             <select id="addSkillList" class="form-select acds-element">
@@ -506,7 +515,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
+                    <div class="modal-footer">
                         <div class="row">
                             <div class="col align-self-center">
                                 <button id="addSkillCreateButton" type="button" class="btn btn-info"
@@ -531,10 +540,10 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: black; border: none;">
+                    <div class="modal-header">
                         <h5 class="modal-title">Adicionar Item</h5>
                     </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none;">
+                    <div class="modal-body text-center">
                         {{> loading}}
                         <div id="addItemContainer" class="container-fluid">
                             <select id="addItemList" class="form-select acds-element">
@@ -546,7 +555,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer" style="background-color: black; border: none;">
+                    <div class="modal-footer">
                         <div class="row">
                             <div class="col align-self-center">
                                 <button type="button" class="btn btn-info" data-bs-dismiss="modal"

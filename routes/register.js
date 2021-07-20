@@ -228,11 +228,10 @@ function registerPlayerData(playerID)
                 .into('player_avatar').then(() => {});
         }
     });
-
-    const subquery = con.select('equipment_id').from('equipment').where('equipment.name', 'Desarmado').first();
+    
     con.insert(
     {
-        equipment_id: subquery,
+        equipment_id: 1,
         player_id: playerID,
         using: false,
         current_ammo: '-'

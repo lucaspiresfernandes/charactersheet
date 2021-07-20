@@ -40,10 +40,10 @@
     {{#with this}}
     <div class="col form-check">
         <input class="form-check-input" type="checkbox" id="status{{attribute_status_id}}"
-            onchange="attributeStatusChange(event, {{attribute_status_id}})" {{checked}}>
+            onchange="attributeStatusChange(event, {{attribute_status_id}})" {{#if checked}}checked{{/if}}>
         <label class="form-check-label" for="status{{attribute_status_id}}">{{name}}</label>
     </div>
-    <script>stats.push($('#status' + {{ attribute_status_id }}));</script>
+    <script>avatarEval.set({{attribute_status_id}}, {{checked}})</script>
     {{/with}}
     {{/each}}
 </div>

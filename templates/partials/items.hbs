@@ -1,14 +1,10 @@
-<div id="itemRow{{item_id}}" class="row my-3 px-4">
-    <div class="col-1">
+<tr id="itemRow{{item_id}}">
+    <td>
         <button class="acds-element" onclick="deleteItemClick(event, {{item_id}});"><i class="bi bi-trash"></i></button>
-    </div>
-    <div class="col">
-        <div id="itemName{{item_id}}" class="acds-element">
-            {{name}}
-        </div>
-    </div>
-    <div class="col">
+    </td>
+    <td id="itemName{{item_id}}">{{name}}</td>
+    <td>
         <input id="itemDescription{{item_id}}" class="acds-element" type="text" value="{{description}}"
-            style="width: 100%; border: none; color: lightgray;" onchange="itemDescriptionChange(event, {{item_id}})">
-    </div>
-</div>
+            style="width: 800px; border: none; color: lightgray" onchange="itemDescriptionChange(event, {{item_id}})">
+    </td>
+</tr>

@@ -42,7 +42,7 @@ router.get('/single', async (req, res) =>
 router.get('/multiple', (req, res) =>
 {
     let dices = req.query.dices;
-    
+
     let results = new Array(dices.length);
     let finishedLength = 0;
 
@@ -54,11 +54,18 @@ router.get('/multiple', (req, res) =>
         let n = parseInt(dice.n);
         let num = parseInt(dice.num);
 
+        if (isNaN(num) || isNaN(n))
+            return res.status(400).send('Bad Request');
+
         if (n === 0 || num <= 1)
         {
             results[i] = num;
             totalSum += num;
             finishedLength++;
+
+            if (finishedLength === dices.length)
+                return res.send({results: results, sum: totalSum});
+            
             continue;
         }
 

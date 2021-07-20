@@ -46,7 +46,12 @@ function rollDice(num = -1, showBranches = true, callback)
     $.ajax('/dice/single', 
     {
         data: {max: diceRollMax},
-        success: onSuccess
+        success: onSuccess,
+        error: err =>
+        {
+            failureToast.show();
+            console.log(err);
+        }
     });
 }
 
@@ -73,7 +78,12 @@ function rollDices(dices)
     $.ajax('/dice/multiple', 
     {
         data: {dices},
-        success: onSuccess
+        success: onSuccess,
+        error: err =>
+        {
+            failureToast.show();
+            console.log(err);
+        }
     });
 }
 
@@ -208,30 +218,33 @@ function uploadAvatarClick(event)
     uploadAvatarContainer.hide();
     loading.show();
 
-    const data = {};
+    const avatars = [];
 
-    for (let [key, value] of avatars)
+    for (let [key, value] of avatarElements)
     {
         const id = key;
         let link = value.val();
         if (!link)
             link = null;
+
         const obj =
         {
             avatar_id: id,
             link: link
         };
-        data[`avatar${id}`] = obj;
+
+        avatars.push(obj);
     }
 
     $.ajax('/avatar',
     {
         method: 'POST',
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data),
+        data: JSON.stringify(avatars),
         success: () =>
         {
-            loadAvatarLinks(data);
+            loadAvatarLinks(avatars);
+
             uploadAvatarModal.hide();
         },
         error: err =>
@@ -245,7 +258,21 @@ function uploadAvatarClick(event)
 
 function evaluateAvatar()
 {
-    avatarImage.attr('src', avatarLinks.get(1));
+    const unc = avatarEval.get(1);
+    const mw = avatarEval.get(2);
+    let ins = avatarEval.get(3);
+    if (!ins)
+        ins = avatarEval.get(4);
+
+    if (unc)
+        return avatarImage.attr('src', avatarLinks.get(2));
+    if (mw)
+        return avatarImage.attr('src', (ins ? avatarLinks.get(5) : avatarLinks.get(3)));
+    if (ins)
+        return avatarImage.attr('src', avatarLinks.get(4));
+    
+    return avatarImage.attr('src', avatarLinks.get(1));
+
 }
 
 async function loadAvatarLinks(data)
@@ -258,8 +285,10 @@ async function loadAvatarLinks(data)
         const el = data[i];
         avatarLinks.set(el.avatar_id, el.link);
     }
+
+    evaluateAvatar();
 }
-$(document).ready(async () => {await loadAvatarLinks(); evaluateAvatar();});
+$(document).ready(() => loadAvatarLinks());
 
 //Attributes
 function attributeBarClick(ev, attributeID)
@@ -372,7 +401,7 @@ function attributeDiceClick(ev, id)
 function attributeStatusChange(ev, attributeStatusID)
 {
     const checked = $(ev.target).prop('checked');
-
+    avatarEval.set(attributeStatusID, checked);
     evaluateAvatar();
     $.ajax('/sheet/player/attributestatus',
     {
