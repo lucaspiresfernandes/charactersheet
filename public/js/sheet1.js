@@ -132,6 +132,14 @@ function resolveDice(_dice, arr)
 {
     let dice = _dice.toLowerCase();
 
+    if (dice.includes('db/'))
+    {
+        let split = dice.split('/');
+        let div = parseInt(split[1]);
+        if (isNaN(div))
+            div = 1;
+        return resolveDice(specs.get('Dano Bônus') / div, arr);
+    }
     if(dice.includes('db'))
         return resolveDice(specs.get('Dano Bônus'), arr);
     
@@ -168,6 +176,12 @@ function resolveAttributeBar(now, max, bar)
 }
 
 const generalDiceText = $('#generalDiceText');
+
+$('#generalDiceRoll').on('shown.bs.modal', ev =>
+{
+    generalDiceText[0].focus();
+});
+
 function generalDiceClick(event)
 {
     let dices = resolveDices(generalDiceText.val());

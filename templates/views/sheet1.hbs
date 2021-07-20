@@ -23,15 +23,20 @@
 
 <body>
     <div class="container">
-        <div class="row h1 text-center d-flex justify-content-center mt-3">
+        <div class="row">
+            <div class="col mt-2 text-end">
+                <a href="/sheet/2" style="font-size: 21px;">Acessar 2° Página</a>
+            </div>
+        </div>
+        <div class="row h1 text-center justify-content-center">
             <div class="col">Perfil de {{playerrole}}</div>
         </div>
         <div class="row my-3">
             <div class="col acds-container">
-                <div class="row h2 mt-4">
-                    <div class="col d-flex justify-content-center">Detalhes Pessoais</div>
+                <div class="row mt-3 text-center">
+                    <div class="col h2">Detalhes Pessoais</div>
+                    <hr>
                 </div>
-                <hr>
                 {{#each info}}
                 {{> info this}}
                 {{/each}}
@@ -48,7 +53,7 @@
                             data-bs-target="#generalDiceRoll" style="max-height: 75px;">
                     </div>
                 </div>
-                <div class="row my-3 px-4">
+                <div class="row my-3 justify-content-center">
                     <script>const avatarEval = new Map();</script>
                     {{#each attributes}}
                     {{> attributes this}}
@@ -176,7 +181,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col text-end">
+            <div class="col mb-2 text-end">
                 <a href="/sheet/2" style="font-size: 21px;">Acessar 2° Página</a>
             </div>
         </div>

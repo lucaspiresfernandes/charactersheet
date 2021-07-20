@@ -164,6 +164,7 @@ CREATE TABLE `attribute` (
 );
 
 INSERT INTO `attribute` (`name`, `rollable`, `bg_color`, `fill_color`) VALUES ('Vida', 0, '5a1e1e', 'b62323');
+INSERT INTO `attribute` (`name`, `rollable`, `bg_color`, `fill_color`) VALUES ('Armadura', 0, '916b03', 'ffbb00');
 INSERT INTO `attribute` (`name`, `rollable`, `bg_color`, `fill_color`) VALUES ('Sanidade', 1, '2c4470', '1f3ce0');
 INSERT INTO `attribute` (`name`, `rollable`, `bg_color`, `fill_color`) VALUES ('Magia', 0, '682f5b', 'ae00ff');
 
@@ -177,8 +178,8 @@ CREATE TABLE `attribute_status` (
 
 INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Inconsciente', 1);
 INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Ferimento Grave', 1);
-INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Traumatizado', 2);
-INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Enlouquecido', 2);
+INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Traumatizado', 3);
+INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Enlouquecido', 3);
 
 CREATE TABLE `player_attribute` (
     `player_attribute_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -216,14 +217,48 @@ CREATE TABLE `equipment` (
     CONSTRAINT `fk_equipment_skill_id` FOREIGN KEY (`skill_id`) REFERENCES `skill` (`skill_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-#--Create equipments.
-
-INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('Desarmado', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+DB', '-', '1(2)', '-', '-');
-INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('Soco Inglês', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d4+1+DB', '-', '1(2)', '-', '-');
-INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('Revólver .41', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10', '20 metros', '1(3)', '8', '100');
-INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('IME Desert Eagle', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10+1d6+3', '20 metros', '1(3)', '7', '94');
-INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES ('M16A2', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '120 metros', '1(2)/Rajada', '30', '97');
-
+INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES 
+#-- Corpo-a-Corpo.
+('Desarmado', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+DB', 'Toque', '1(2)', '-', '-'),
+('Soqueira', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+1+DB', 'Toque', '1', '-', '-'),
+('Tocha Acesa (Queimar)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d6', '3 metros', '1', '-', '-'),
+('Cassetete', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d8+DB', 'Toque', '1', '-', '-'),
+('Bastão Grande', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d8+DB', 'Toque', '1', '-', '-'),
+('Bastão Pequeno', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d6+DB', 'Toque', '1', '-', '-'),
+('Faca Grande', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d8+DB', 'Toque', '1', '-', '-'),
+('Faca Média', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d4+2+DB', 'Toque', '1', '-', '-'),
+('Faca Pequena', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d4+DB', 'Toque', '1', '-', '-'),
+('Spray de Pimenta (Atordoar)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d4+DB', '2 metros', '1', '25', '-'),
+('Taser (Atordoar)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3', 'Toque', '1', '-', '-'),
+('Taser (Dardo) (Atordoar)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d3', '5 metros', '1', '3', '-'),
+('Lança Grande', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Lanças'), '1d8+1', 'Toque', '1', '-', '-'),
+('Espada Pesada', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Espadas'), '1d8+1+DB', 'Toque', '1', '-', '-'),
+('Espada Média', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Espadas'), '1d6+1+DB', 'Toque', '1', '-', '-'),
+('Espada Leve', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Espadas'), '1d6+DB', 'Toque', '1', '-', '-'),
+('Garrote', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Garrote'), '1d6+DB', 'Toque', '1', '-', '-'),
+('Machadinha', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Machados'), '1d6+1+DB', 'Toque', '1', '-', '-'),
+('Machado Grande', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Machados'), '1d8+2+DB', 'Toque', '1', '-', '-'),
+('Serra Elétrica', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Motosserras'), '2d8', 'Toque', '1', '-', '-'),
+('Chicote', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Chicotes'), '1d3+DB/2', '3 metros', '1', '-', '-'),
+('Nunchaku', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Manguais'), '1d8+DB', 'Toque', '1', '-', '-'),
+#-- Pistolas e Arcos
+('Arco e Flecha', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Arcos'), '1d6+DB/2', '30 metros', '1', '1', '97'),
+('Besta', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Arcos'), '1d8+2', '50 metros', '1', '1', '96'),
+('Revólver .41', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10', '20 metros', '1(3)', '8', '100'),
+('Glock 9mm', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10', '15 metros', '1(3)', '17', '98'),
+('IME Desert Eagle', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10+1d6+3', '20 metros', '1(3)', '7', '94'),
+#-- Rifles e Espingardas
+('Barrett Model 82', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d10+1d8+6', '250 metros', '1', '11', '96'),
+#-- Fuzis de Assalto
+('AK-47', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6+1', '100 metros', '1(2)/Auto', '30', '100'),
+('M16A2', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '110 metros', '1(2)/Rajada', '30', '97'),
+('M4', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '90 metros', '1/Rajada', '30', '97'),
+#--Submetralhadoras
+('Thompson (20)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '20', '96'),
+('Thompson (30)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '30', '96'),
+('Thompson (50)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '50', '96'),
+('UZI', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10', '20 metros', '1(2)/Auto', '32', '98'),
+('Skorpion', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d8', '15 metros', '1(3)/Auto', '20', '96');
 
 CREATE TABLE `player_equipment` (
     `player_equipment_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -265,7 +300,16 @@ CREATE TABLE `item` (
     PRIMARY KEY (`item_id`)
 );
 
-#--Create items.
+INSERT INTO `item` (`name`, `description`) VALUES ('Chapa de Identificação', 'Uma chapa de identificação militar.'),
+('Vestimentas', 'Descreva suas vestimentas aqui.'),
+('Celular', 'Um celular comum.'),
+('Isqueiro', 'Um isqueiro comum.'),
+('Mochila', 'Uma mochila comum. Descreva aqui seu tamanho e sua capacidade.'),
+('Maleta', 'Uma maleta comum. Descreva aqui seu tamanho e sua capacidade.'),
+('Mala', 'Uma mala comum. Descreva aqui seu tamanho e sua capacidade.'),
+('Bolsa', 'Uma bolsa comum. Descreva aqui seu tamanho e sua capacidade.'),
+('Relógio', 'Um relógio comum.'),
+('Carteira', 'Uma carteira comum.');
 
 CREATE TABLE `player_item` (
     `player_item_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,

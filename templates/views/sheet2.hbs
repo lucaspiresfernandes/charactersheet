@@ -22,13 +22,18 @@
 
 <body>
     <div class="container">
-        <div class="row h1 text-center d-flex justify-content-center">
+        <div class="row">
+            <div class="col mt-2 text-end">
+                <a href="/sheet/1" style="font-size: 21px;">Acessar 1° Página</a>
+            </div>
+        </div>
+        <div class="row h1 text-center justify-content-center">
             <div class="col mt-2">Perfil de {{playerrole}}</div>
         </div>
         <div class="row">
             <div class="col" style="border-style: solid; border-width: 1px; border-color: gray; border-radius: 20px;">
                 <div class="row h2 mt-4">
-                    <div class="col d-flex justify-content-center">Detalhes Pessoais</div>
+                    <div class="col justify-content-center">Detalhes Pessoais</div>
                 </div>
                 {{#each extraInfo}}
                 {{> extrainfo this}}
@@ -36,7 +41,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col text-end">
+            <div class="col mb-2 text-end">
                 <a href="/sheet/1" style="font-size: 21px;">Acessar 1° Página</a>
             </div>
         </div>

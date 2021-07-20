@@ -88,6 +88,7 @@ router.get('/1', async (req, res) =>
             }
 
             const attributes = Array.from(attributeMap.values());
+            attributes.sort((a, b) => a.attribute_id - b.attribute_id);
 
             resolve(attributes);
         }),
