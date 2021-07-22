@@ -32,7 +32,7 @@
             $(success).text(`Logado com sucesso! Redirecionando para a ficha...`);
             $('body').append(success);
             
-            let url = admin ? '/sheet/admin' : '/sheet/1';
+            let url = admin ? '/sheet/admin/1' : '/sheet/1';
             window.location.replace(url);
         }
 

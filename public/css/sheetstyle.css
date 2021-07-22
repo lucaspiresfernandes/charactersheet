@@ -19,6 +19,27 @@ body {
     color: white;
 }
 
+.skill-container {
+    background-color: black;
+}
+
+.skill-container:hover {
+    background-color: white;
+}
+
+.skill-container:hover .acds-element {
+    background-color: white;
+    color: black;
+}
+
+.skill-container .skill-label {
+    color: white;
+}
+
+.skill-container:hover .skill-label {
+    color: black;
+}
+
 .acds-bottom-text {
     outline: 0;
     border-width: 0 0 1px;
@@ -40,6 +61,17 @@ body {
 
 .modal-footer {
     border-top: 1px solid black;
+}
+
+.progress {
+    height: 40px;
+}
+
+#avatar {
+    border: solid 1px white;
+    max-height: 255px;
+    min-width: 100px;
+    min-height: 100px;
 }
 
 * {

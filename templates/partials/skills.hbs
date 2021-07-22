@@ -1,5 +1,4 @@
-<div id="skillContainer{{skill_id}}" class="col my-4 acds-clickable skill-container" style="border-radius: 20px;"
-    onmouseover="containerMouseOver(event, {{skill_id}})" onmouseout="containerMouseOut(event, {{skill_id}})">
+<div id="skillContainer{{skill_id}}" class="col my-4 acds-clickable skill-container" style="border-radius: 20px;">
     <div class="row">
         <div class="col">
             <input id="skillCheck{{skill_id}}" type="checkbox" class="form-check-input"
@@ -8,7 +7,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <input class="acds-element" type="text" id="skill{{skill_id}}" value="{{value}}"
+            <input class="acds-element" type="text" id="skill{{skill_id}}" value="{{value}}" maxlength="3"
                 style="outline: 0; border-width: 0 0 1px; text-align: center; max-width: 80px; font-size: 18px;"
                 onchange="skillChange(event, {{skill_id}})">
         </div>

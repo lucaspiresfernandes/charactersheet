@@ -1,0 +1,25 @@
+<div class="modal fade" id="generalDiceRoll" tabindex="-1" aria-labelledby="generalDiceRollLabel"
+    data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Dado Personalizado</h5>
+            </div>
+            <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
+                <div class="container-fluid ">
+                    <div class="row">
+                        <div class="col">
+                            <form onsubmit="event.preventDefault(); generalDiceClick(event); this.reset();">
+                                <input id="generalDiceText" type="text" autocomplete="off" placeholder="Dado" required>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="generalDiceClick(event)" class="btn btn-primary">Rolar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

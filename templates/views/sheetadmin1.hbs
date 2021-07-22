@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="/assets/icon.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Cinzel:wght@500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/adminstyle.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <script>
+        $(() => {
+            $(".sortable").sortable();
+            $(".sortable").disableSelection();
+        });
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>const socket = io(); const playerNames = new Map();</script>
+
+    <title>{{rpgname}}</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col mt-2 text-end">
+                <a href="/sheet/admin/2" style="font-size: 21px;">Acessar 2° Página</a>
+            </div>
+        </div>
+        <div class="row h1 text-center">
+            <div class="col">Administrador</div>
+        </div>
+        <div class="row justify-content-center">
+            {{#if characters}}
+            {{#each characters}}
+            {{#with this}}
+            <div class="col my-2 mx-2 text-center acds-player-container">
+                <div class="row my-3">
+                    <div class="col">
+                        <img id="avatar{{playerID}}" class="img-fluid rounded-circle avatar" src="{{avatar.link}}">
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <script>playerNames.set({{playerID}}, '{{name.value}}')</script>
+                    <div id="info{{playerID}}{{name.info_id}}" class="col data" style="font-size: 24px;">
+                        {{name.value}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row my-3">
+                    {{#each attributes}}
+                    {{#with this}}
+                    <div class="col">
+                        <div class="row">
+                            <div id="attribute{{../playerID}}{{attribute_id}}" class="col data"
+                                style="color: #{{fill_color}};">
+                                {{value}}/{{max_value}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{name}}
+                            </div>
+                        </div>
+                    </div>
+                    {{/with}}
+                    {{/each}}
+                </div>
+                <hr>
+                <div class="row my-3">
+                    {{#each specs}}
+                    {{#with this}}
+                    <div class="col">
+                        <div class="row">
+                            <div id="spec{{../playerID}}{{spec_id}}" class="col data">
+                                {{value}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="spec{{../playerID}}{{spec_id}}">{{name}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    {{/with}}
+                    {{/each}}
+                </div>
+                <hr>
+                <div class="row my-3">
+                    {{#each characteristics}}
+                    {{#with this}}
+                    <div class="col">
+                        <div class="row">
+                            <div id="characteristic{{../playerID}}{{characteristic_id}}" class="col data">
+                                {{value}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{name}}
+                            </div>
+                        </div>
+                    </div>
+                    {{/with}}
+                    {{/each}}
+                </div>
+                <hr>
+                <div class="row my-3">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col data">
+                                Equipamentos
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col table-responsive">
+                                <table class="table table-dark">
+                                    <thead>
+                                        <th scope="col">Usando</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Dano</th>
+                                        <th scope="col">Alcance</th>
+                                        <th scope="col">Ataques</th>
+                                    </thead>
+                                    <tbody id="equipmentTable{{playerID}}">
+                                        {{#each equipments}}
+                                        {{#with this}}
+                                        <tr id="equipmentRow{{../playerID}}{{equipment_id}}">
+                                            <td id="equipmentUsing">
+                                                <i class="{{#if using}}bi bi-check{{else}}bi bi-x{{/if}}"></i>
+                                            </td>
+                                            <td>
+                                                {{name}}
+                                            </td>
+                                            <td>
+                                                {{damage}}
+                                            </td>
+                                            <td>
+                                                {{range}}
+                                            </td>
+                                            <td>
+                                                {{attacks}}
+                                            </td>
+                                        </tr>
+                                        {{/with}}
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row my-3">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col data">
+                                Inventário
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col table-responsive">
+                                <table class="table table-sm table-borderless">
+                                    <tbody id="itemTable{{playerID}}">
+                                        {{#each items}}
+                                        {{#with this}}
+                                        <tr id="itemRow{{../playerID}}{{item_id}}">
+                                            <td data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="{{description}}">
+                                                {{name}}
+                                            </td>
+                                        </tr>
+                                        {{/with}}
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/with}}
+            {{/each}}
+            {{else}}
+            <div class="col text-center" style="color: gray;">
+                Não há nenhum player cadastrado. Recarregue a página quando houver algum cadastro.
+            </div>
+            {{/if}}
+        </div>
+        <div class="row my-3 text-center acds-container">
+            <div class="col">
+                <div class="row my-3 h1 text-center">
+                    <div class="col">Utilidades</div>
+                </div>
+                <hr>
+                <div class="row my-4 text-center">
+                    <div class="col">
+                        <img class="img-fluid acds-clickable" src="/assets/dice.png" data-bs-toggle="modal"
+                            style="max-height: 75px;" data-bs-target="#generalDiceRoll">
+                    </div>
+                </div>
+                <div class="row my-4">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col table-wrapper" style="max-height: 280px;">
+                                <ul id="diceList" class="dice-list" style="background-color: #111;">
+                                    
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">
+                                        <input id="orderAddText" class="acds-element acds-bottom-text" type="text">
+                                        <input class="acds-element" type="button" value="+"
+                                            onclick="orderAddButtonClick(event)" style="border: solid 1px;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <ul id="order" class="sortable" style="position: relative; left: 20%;">
+                                            {{#each characters}}
+                                            <li class="ui-state-default">
+                                                {{name.value}}
+                                                <input type="text" class="acds-element acds-bottom-text"
+                                                    style="color: darkgray; max-width: 3rem;" maxlength="3">
+                                            </li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-3 acds-container">
+            <div class="col">
+                <div class="row my-3">
+                    <div class="col">
+                        <div class="row h1 text-center">
+                            <div class="col">Anotações</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col">
+                                <textarea id="adminAnotations" class="form-control acds-element"
+                                    style="background-color: black !important; color: white !important;"
+                                    onchange="adminAnotationsChange(event)" rows="20">{{anotations}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col mb-2 text-end">
+                <a href="/sheet/admin/2" style="font-size: 21px;">Acessar 2° Página</a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {{> failuretoast}}
+        {{> generaldice}}
+        {{> diceroll}}
+    </div>
+
+    <script src="/js/admin1.js"></script>
+</body>
+
+</html>

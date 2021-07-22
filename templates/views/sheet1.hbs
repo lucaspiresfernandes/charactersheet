@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Cinzel:wght@500&display=swap"
         rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sheetstyle.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
     <title>{{rpgname}}</title>
@@ -28,7 +28,7 @@
                 <a href="/sheet/2" style="font-size: 21px;">Acessar 2° Página</a>
             </div>
         </div>
-        <div class="row h1 text-center justify-content-center">
+        <div class="row h1 text-center">
             <div class="col">Perfil de {{playerrole}}</div>
         </div>
         <div class="row my-3">
@@ -38,15 +38,28 @@
                     <hr>
                 </div>
                 {{#each info}}
-                {{> info this}}
+                {{#with this}}
+                <div class="row mt-4">
+                    <div class="col">
+                        <div class="row mb-1">
+                            <div class="col mx-2 h5"><label for="info{{info_id}}">{{name}}</label></div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input class="acds-element acds-bottom-text" type="text" id="info{{info_id}}"
+                                    value="{{value}}" onchange="infoChange(event, {{info_id}})">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
                 {{/each}}
             </div>
             <div class="col mt-3">
                 <div class="row text-center">
                     <div class="col">
-                        <img id="avatar" class="img-fluid rounded-circle acds-clickable"
-                            style="border: solid 1px white; max-height: 255px; min-width: 100px; min-height: 100px;"
-                            data-bs-toggle="modal" data-bs-target="#uploadAvatar">
+                        <img id="avatar" class="img-fluid rounded-circle acds-clickable" data-bs-toggle="modal"
+                            data-bs-target="#uploadAvatar">
                     </div>
                     <div class="col align-self-center">
                         <img class="img-fluid acds-clickable" src="/assets/dice.png" data-bs-toggle="modal"
@@ -54,15 +67,88 @@
                     </div>
                 </div>
                 <div class="row my-3 justify-content-center">
-                    <script>const avatarEval = new Map();</script>
-                    {{#each attributes}}
-                    {{> attributes this}}
-                    {{/each}}
+                    <div class="col">
+                        <script>const avatarEval = new Map();</script>
+                        {{#each attributes}}
+                        {{#with this}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">{{name}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="progress acds-clickable" style="background-color: #{{bg_color}};"
+                                            onclick="attributeBarClick(event, {{attribute_id}})">
+                                            <div id="attributeBar{{attribute_id}}" class="progress-bar"
+                                                role="progressbar" aria-valuenow="{{value}}" aria-valuemin="0"
+                                                aria-valuemax="{{max_value}}"
+                                                style="background-color: #{{fill_color}}; width: {{coeficient}}%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{#if rollable}}
+                                    <div class="col-1 align-self-center">
+                                        <img class="acds-clickable"
+                                            onclick="attributeDiceClick(event, {{attribute_id}})" src="/assets/dice.png"
+                                            style="max-height: 35px;">
+                                    </div>
+                                    {{/if}}
+                                </div>
+                                <div class="row text-center my-2" {{#if rollable}} style="width: 85%" {{/if}}>
+                                    <div class="col">
+                                        <input id="attributeIncrease{{attribute_id}}" type="button" value="+"
+                                            onclick="attributeIncreaseClick(event, {{attribute_id}})"
+                                            class="acds-element" style="border: solid 1px; width: 75px">
+                                    </div>
+                                    <div id="attributeDesc{{attribute_id}}" class="col" style="font-size: 22px;">
+                                        {{value}}/{{max_value}}
+                                    </div>
+                                    <div class="col">
+                                        <input id="attributeDecrease{{attribute_id}}" type="button" value="-"
+                                            onclick="attributeDecreaseClick(event, {{attribute_id}})"
+                                            class="acds-element" style="border: solid 1px; width: 75px">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{#if status}}
+                        <div class="row px-5">
+                            {{#each status}}
+                            {{#with this}}
+                            <div class="col form-check">
+                                <input class="form-check-input" type="checkbox" id="status{{attribute_status_id}}"
+                                    onchange="attributeStatusChange(event, {{attribute_status_id}})" {{#if
+                                    checked}}checked{{/if}}>
+                                <label class="form-check-label" for="status{{attribute_status_id}}">{{name}}</label>
+                            </div>
+                            <script>avatarEval.set({{ attribute_status_id }}, {{ checked }})</script>
+                            {{/with}}
+                            {{/each}}
+                        </div>
+                        {{/if}}
+                        {{/with}}
+                        {{/each}}
+                    </div>
                 </div>
                 <div class="row my-3 text-center">
                     <script>const specs = new Map();</script>
                     {{#each specs}}
-                    {{> specs this}}
+                    {{#with this}}
+                    <div class="col mt-3">
+                        <div class="row">
+                            <div class="col">
+                                <input class="acds-element acds-bottom-text" type="text" id="spec{{spec_id}}"
+                                    value="{{value}}" style="text-align: center; max-width: 120px; font-size: 25px;"
+                                    onchange="specs.set('{{name}}', $(event.target).val()); specChange(event, {{spec_id}}); ">
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div id="specLabel{{spec_id}}" class="col">{{name}}</div>
+                            <script>specs.set('{{name}}', '{{value}}');</script>
+                        </div>
+                    </div>
+                    {{/with}}
                     {{/each}}
                 </div>
             </div>
@@ -75,7 +161,27 @@
                 </div>
                 <div class="row text-center">
                     {{#each characteristics}}
-                    {{> characteristics this}}
+                    {{#with this}}
+                    <div class="col my-3">
+                        <div class="row">
+                            <div class="col">
+                                <img class="img-fluid acds-clickable" src="/assets/dice.png" style="max-height: 40px;"
+                                    {{#if rollable}} onclick="characteristicDiceClick(event, {{characteristic_id}})"
+                                    {{/if}}>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">{{name}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><input class="acds-element" type="text" maxlength="3"
+                                    id="characteristic{{characteristic_id}}" value="{{value}}"
+                                    style="outline: 0; border-width: 0 0 1px; text-align: center; max-width: 120px; font-size: 25px;"
+                                    onchange="characteristicChange(event, {{characteristic_id}})">
+                            </div>
+                        </div>
+                    </div>
+                    {{/with}}
                     {{/each}}
                 </div>
             </div>
@@ -87,7 +193,7 @@
                     <div class="col-1 text-end">
                         <input type="button" value="+" class="acds-element"
                             style="border: solid 1px; position: relative; right: 20px;" data-bs-toggle="modal"
-                            data-bs-target="#addEquipment" />
+                            data-bs-target="#addEquipment">
                     </div>
                     <hr>
                 </div>
@@ -151,17 +257,23 @@
                     <div class="col-1 text-end">
                         <input type="button" value="+" class="acds-element"
                             style="border: solid 1px; position: relative; right: 20px;" data-bs-toggle="modal"
-                            data-bs-target="#addItem" />
+                            data-bs-target="#addItem">
                     </div>
                     <hr>
                 </div>
             </div>
             <div class="row text-center my-3">
                 {{#each finances}}
-                {{> finances this}}
+                {{#with this}}
+                <div class="col">
+                    {{name}}: <input class="acds-element acds-bottom-text" type="text" id="finance{{finance_id}}"
+                        value="{{value}}" style="outline: 0; border-width: 0 0 1px; max-width: 120px;"
+                        onchange="financeChange(event, {{finance_id}})">
+                </div>
+                {{/with}}
                 {{/each}}
             </div>
-            <div {{!id="itemTable" }} class="row my-3">
+            <div class="row my-3">
                 <div class="col table-responsive">
                     <table class="table table-dark" style="--bs-table-bg: black">
                         <thead>
@@ -190,67 +302,15 @@
     <div>
         {{> failuretoast}}
 
-        <div class="modal fade" id="generalDiceRoll" tabindex="-1" aria-labelledby="generalDiceRollLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Dado Personalizado</h5>
-                    </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
-                        <div class="container-fluid ">
-                            <div class="row">
-                                <div class="col">
-                                    <form onsubmit="event.preventDefault(); generalDiceClick(event);">
-                                        <input id="generalDiceText" type="text" autocomplete="off" placeholder="Dado"
-                                            required>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button onclick="generalDiceClick(event)" class="btn btn-primary">Rolar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{> generaldice}}
 
-        <div class="modal fade" id="diceRoll" tabindex="-1" aria-labelledby="diceRollLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Resultado dos Dados</h5>
-                    </div>
-                    <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
-                        {{> loading}}
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <div id="diceResultContent" style="font-size: 48px;">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div id="diceResultDescription" style="font-size: 16px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{> diceroll}}
 
         <div class="modal fade" id="uploadAvatar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
             aria-labelledby="uploadAvatarLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form onsubmit="event.preventDefault(); uploadAvatarClick(event);">
+                    <form onsubmit="event.preventDefault(); uploadAvatarClick(event); this.reset();">
                         <div class="modal-header">
                             <h5 class="modal-title">Atualizar Avatar</h5>
                         </div>
@@ -262,7 +322,7 @@
                                 {{#with this}}
                                 <div class="row my-3">
                                     <div class="col">
-                                        <input class="upload-avatar-input" id="avatarLink{{avatar_id}}" type="text"
+                                        <input id="avatarLink{{avatar_id}}" type="text"
                                             placeholder="Link de Avatar {{name}}" autocomplete="off"
                                             style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif;">
                                     </div>
@@ -293,7 +353,7 @@
             data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form onsubmit="event.preventDefault(); createEquipmentClick(event);">
+                    <form onsubmit="event.preventDefault(); createEquipmentClick(event); this.reset();">
                         <div class="modal-header">
                             <h5 class="modal-title">Criar Equipamento</h5>
                         </div>
@@ -371,7 +431,7 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form onsubmit="event.preventDefault(); createSkillClick(event);">
+                    <form onsubmit="event.preventDefault(); createSkillClick(event); this.reset();">
                         <div class="modal-header">
                             <h5 class="modal-title">Criar Perícia</h5>
                         </div>
@@ -421,7 +481,7 @@
             data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form onsubmit="event.preventDefault(); createItemClick(event);">
+                    <form onsubmit="event.preventDefault(); createItemClick(event); this.reset();">
                         <div class="modal-header">
                             <h5 class="modal-title">Criar Item</h5>
                         </div>
@@ -437,7 +497,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <textarea class="acds-element form-control" id="createItemDescription"
-                                            placeholder="Descrição Geral" rows="3" required></textarea>
+                                            placeholder="Descrição Inicial" rows="3" required></textarea>
                                     </div>
                                 </div>
                             </div>

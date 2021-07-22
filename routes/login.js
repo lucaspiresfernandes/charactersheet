@@ -24,9 +24,9 @@ router.post('/', urlParser, async(req, res) =>
             return res.status(400).send('Usuário ou senha não foram processados corretamente.');
 
         let result = await con.select('player.player_id', 'player.password', 'player.admin')
-            .from('player')
-            .where('username', username)
-            .first();
+        .from('player')
+        .where('username', username)
+        .first();
 
         if (!result)
             return res.status(401).send('Usuário ou senha incorretos.');
@@ -39,7 +39,10 @@ router.post('/', urlParser, async(req, res) =>
         if (!exists)
             return res.status(401).send('Usuário ou senha incorretos.');
 
-        req.session.playerID = id;
+        if (admin)
+            req.session.adminID = id;
+        else 
+            req.session.playerID = id;
 
         res.send({admin});
     }

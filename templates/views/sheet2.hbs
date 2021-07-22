@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Cinzel:wght@500&display=swap"
         rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sheetstyle.css">
 
     <title>{{rpgname}}</title>
 </head>
@@ -36,7 +36,24 @@
                     <div class="col justify-content-center">Detalhes Pessoais</div>
                 </div>
                 {{#each extraInfo}}
-                {{> extrainfo this}}
+                {{#with this}}
+                <div class="row my-4">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col h4">
+                                <label for="info{{extra_info_id}}">{{name}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <textarea class="form-control acds-element" id="info{{extra_info_id}}"
+                                    style="background-color: black !important; color: white !important;" rows="10"
+                                    onchange="extraInfoChange(event, {{extra_info_id}})">{{value}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
                 {{/each}}
             </div>
         </div>

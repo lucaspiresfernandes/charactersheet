@@ -118,7 +118,7 @@ function resolveSuccessType(num, roll, showBranches)
 
 function resolveDices(str)
 {
-    let dices = str.replace(/\s+/g, '').split('+');
+    let dices = str.replace(/\s+/g, '').toLowerCase().split('+');
     let arr = [];
     for (let i = 0; i < dices.length; i++)
     {
@@ -128,36 +128,38 @@ function resolveDices(str)
     return arr;
 }
 
-function resolveDice(_dice, arr)    
+function resolveDice(dice, arr)    
 {
-    let dice = _dice.toLowerCase();
-
     if (dice.includes('db/'))
     {
-        let split = dice.split('/');
-        let div = parseInt(split[1]);
+        let div = parseInt(dice.split('/')[1]);
         if (isNaN(div))
             div = 1;
-        return resolveDice(specs.get('Dano Bônus') / div, arr);
+        
+        const db = specs.get('Dano Bônus');
+        const split = db.split('d');
+        let text = '';
+
+        if (split.length === 1)
+            text = Math.round(parseInt(split[0]) / div).toString();
+        else
+            text = `${split[0]}d${Math.round(parseInt(split[1]) / div)}`;
+        
+        return resolveDice(text, arr);
     }
     if(dice.includes('db'))
         return resolveDice(specs.get('Dano Bônus'), arr);
     
-    let n = 0, num;
-
     let split = dice.split('d');
 
     if (split.length === 1)
-        return arr.push({n, num: dice});
+        return arr.push({n: 0, num: dice});
 
-    n = split[0];
-    if (n === '')
+    let n = parseInt(split[0]);
+    if (isNaN(n))
         n = 1;
-    num = split[1];
-    for (let i = 0; i < n; i++)
-    {
-        arr.push({n:'1', num});
-    }
+    let num = parseInt(split[1]);
+    arr.push({n, num});
 }
 
 function clamp(n, min, max)
@@ -214,14 +216,12 @@ const avatarLinks = new Map();
 const uploadAvatarContainer = $('#uploadAvatarContainer');
 const uploadAvatarButton = $('#uploadAvatarButton');
 const uploadAvatarCloseButton = $('#uploadAvatarCloseButton');
-const avatarInputs = $('.upload-avatar-input');
 
 $('#uploadAvatar').on('hidden.bs.modal', () =>
 {
     uploadAvatarButton.prop('disabled', false);
     uploadAvatarCloseButton.prop('disabled', false);
     uploadAvatarContainer.show();
-    avatarInputs.val('');
     loading.hide();
 });
 
@@ -307,7 +307,6 @@ $(document).ready(() => loadAvatarLinks());
 //Attributes
 function attributeBarClick(ev, attributeID)
 {
-    let bar = $(`#attributeBar${attributeID}`);
     let desc = $(`#attributeDesc${attributeID}`);
 
     let split = desc.text().split('/');
@@ -315,10 +314,11 @@ function attributeBarClick(ev, attributeID)
     let max = parseInt(split[1]);
 
     let newMax = prompt('Digite o novo máximo do atributo:', max);
-    let newCur = clamp(cur, 0, newMax);
 
-    if (!newMax || isNaN(newMax))
+    if (!newMax || isNaN(newMax) || newMax === max)
         return;
+
+    let newCur = clamp(cur, 0, newMax);
 
     $.ajax('/sheet/player/attribute',
     {
@@ -327,7 +327,7 @@ function attributeBarClick(ev, attributeID)
         success : data =>
         {
             desc.text(`${newCur}/${newMax}`);
-            resolveAttributeBar(newCur, newMax, bar);
+            resolveAttributeBar(newCur, newMax, $(`#attributeBar${attributeID}`));
         },
         error: err =>
         {
@@ -340,7 +340,6 @@ function attributeBarClick(ev, attributeID)
 function attributeIncreaseClick(ev, attributeID)
 {
     const desc = $(`#attributeDesc${attributeID}`);
-    const bar = $(`#attributeBar${attributeID}`);
 
     let diff = 1;
     if (ev.shiftKey)
@@ -352,13 +351,18 @@ function attributeIncreaseClick(ev, attributeID)
     let max = parseInt(split[1]);
     let newCur = clamp(cur + diff, 0, max);
 
+    if (cur === newCur)
+        return;
+
     desc.text(`${newCur}/${max}`);
+
+    const bar = $(`#attributeBar${attributeID}`);
     resolveAttributeBar(newCur, max, bar);
 
     $.ajax('/sheet/player/attribute',
     {
         method: 'POST',
-        data: {attributeID, value: newCur, maxValue: max},
+        data: {attributeID, value: newCur},
         error: err =>
         {
             desc.text(`${cur}/${max}`);
@@ -372,7 +376,6 @@ function attributeIncreaseClick(ev, attributeID)
 function attributeDecreaseClick(ev, attributeID)
 {
     const desc = $(`#attributeDesc${attributeID}`);
-    const bar = $(`#attributeBar${attributeID}`);
     
     let diff = 1;
     if (ev.shiftKey)
@@ -384,13 +387,17 @@ function attributeDecreaseClick(ev, attributeID)
     let max = parseInt(split[1]);
     let newCur = clamp(cur - diff, 0, max);
 
+    if (cur === newCur)
+        return;
+
+    const bar = $(`#attributeBar${attributeID}`);
     desc.text(`${newCur}/${max}`);
     resolveAttributeBar(newCur, max, bar);
 
     $.ajax('/sheet/player/attribute',
     {
         method: 'POST',
-        data: {attributeID, value: newCur, maxValue: max},
+        data: {attributeID, value: newCur},
         error: err =>
         {
             desc.text(`${cur}/${max}`);
@@ -490,16 +497,9 @@ const createEquipmentCloseButton = $('#createEquipmentCloseButton');
 
 $('#createEquipment').on('hidden.bs.modal', () =>
 {
-    createEquipmentName.val('');
-    createEquipmentSpecialization.val('');
-    createEquipmentDamage.val('');
-    createEquipmentRange.val('');
-    createEquipmentAttacks.val('');
-    createEquipmentAmmo.val('');
-    createEquipmentMalf.val('');
-    createEquipmentContainer.show();
     createEquipmentButton.prop('disabled', false);
     createEquipmentCloseButton.prop('disabled', false);
+    createEquipmentContainer.show();
     loading.hide();
 });
 
@@ -616,12 +616,11 @@ function createEquipmentClick(event)
 
 function equipmentUsingChange(ev, equipmentID)
 {
-    const currentAmmo = $(`#equipmentAmmo${equipmentID}`).val();
     const using = $(ev.target).prop('checked');
     $.ajax('/sheet/player/equipment',
     {
         method: 'POST',
-        data: {equipmentID, using, currentAmmo},
+        data: {equipmentID, using},
         error: (err) =>
         {
             console.log(err);
@@ -632,9 +631,8 @@ function equipmentUsingChange(ev, equipmentID)
 
 function equipmentAmmoChange(ev, equipmentID)
 {
-    const using = $(`#equipmentUsing${equipmentID}`).prop('checked');
     const currentAmmo = $(ev.target);
-
+    let curAmmo = parseInt(currentAmmo.val());
     let maxAmmo = parseInt($(`#equipmentMaxAmmo${equipmentID}`).text());
 
     if (isNaN(maxAmmo))
@@ -642,26 +640,13 @@ function equipmentAmmoChange(ev, equipmentID)
         currentAmmo.val('-');
         return alert('Esse equipamento não possui munição.');
     }
-    else
+    else if (curAmmo > maxAmmo)
     {
-        let curAmmo = parseInt(currentAmmo.val());
-        if (curAmmo > maxAmmo)
-        {
-            currentAmmo.val('-');
-            return alert('Você não pode ter mais balas do que a capacidade do equipamento.');
-        }
+        currentAmmo.val('-');
+        return alert('Você não pode ter mais balas do que a capacidade do equipamento.');
     }
 
-    $.ajax('/sheet/player/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID, using, currentAmmo: currentAmmo.val()},
-        error: (err) =>
-        {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+    postCurrentAmmo(equipmentID, currentAmmo.val());
 }
 
 function equipmentDiceClick(ev, id)
@@ -670,26 +655,36 @@ function equipmentDiceClick(ev, id)
     const ammoTxt = $(`#equipmentAmmo${id}`);
 
     let ammo = parseInt(ammoTxt.val());
-    let ammoPass = true;
     let maxAmmo = parseInt($(`#equipmentMaxAmmo${id}`).text());
 
     if (!isNaN(maxAmmo))
     {
         if (isNaN(ammo) || ammo <= 0)
-            ammoPass = false;
+            return alert('Você não tem munição para isso.');
         else
+        {
             ammoTxt.val(--ammo);
-    }
-
-    if (!ammoPass)
-    {
-        diceRollModal.hide();
-        return alert('Você não tem munição para isso.');
+            postCurrentAmmo(id, ammo);
+        }
     }
 
     diceRollModal.show();
     let dmg = resolveDices(damageField.text());
     rollDices(dmg);
+}
+
+function postCurrentAmmo(equipmentID, currentAmmo)
+{
+    $.ajax('/sheet/player/equipment',
+    {
+        method: 'POST',
+        data: {equipmentID, currentAmmo},
+        error: (err) =>
+        {
+            console.log(err);
+            failureToast.show();
+        }
+    });
 }
 
 
@@ -713,11 +708,9 @@ const createSkillSpecialization = $('#createSkillSpecialization');
 
 $('#createSkill').on('hidden.bs.modal', () =>
 {
-    createSkillSpecialization.val('');
-    createSkillName.val('');
-    createSkillContainer.show();
     createSkillButton.prop('disabled', false);
     createSkillCloseButton.prop('disabled', false);
+    createSkillContainer.show();
     loading.hide();
 });
 
@@ -802,24 +795,6 @@ function addSkillClick(ev)
     });
 }
 
-function containerMouseOver(ev, id)
-{
-    $(`#skillContainer${id}`).css('background-color', 'white');
-    $(`#skillLabel${id}`).css('color', 'black');
-    const txt = $(`#skill${id}`);
-    txt.css('background-color', 'white');
-    txt.css('color', 'black');
-}
-
-function containerMouseOut(ev, id)
-{
-    $(`#skillContainer${id}`).css('background-color', 'black');
-    $(`#skillLabel${id}`).css('color', 'white');
-    const txt = $(`#skill${id}`);
-    txt.css('background-color', 'black');
-    txt.css('color', 'white');
-}
-
 function skillSearchBarInput(ev)
 {
     const searchBar = $(ev.target);
@@ -843,12 +818,11 @@ function skillSearchBarInput(ev)
 function skillChange(event, id)
 {
     const value = $(event.target).val();
-    const checked = $(`skillCheck${id}`).prop('checked');
 
     $.ajax('/sheet/player/skill',
     {
         method: 'POST',
-        data: {skillID: id, value: value, checked: checked},
+        data: {skillID: id, value: value},
         error: err =>
         {
             console.log(err);
@@ -860,12 +834,11 @@ function skillChange(event, id)
 function skillCheckChange(event, id)
 {
     const checked = $(event.target).prop('checked');
-    const value = $(`skill${id}`).val();
     
     $.ajax('/sheet/player/skill',
     {
         method: 'POST',
-        data: {skillID: id, value: value, checked: checked},
+        data: {skillID: id, checked: checked},
         error: err =>
         {
             console.log(err);
@@ -923,11 +896,9 @@ const createItemDescription = $('#createItemDescription');
 
 $('#createItem').on('hidden.bs.modal', () =>
 {
-    createItemName.val('');
-    createItemDescription.val('');
-    createItemContainer.show();
     createItemButton.prop('disabled', false);
     createItemCloseButton.prop('disabled', false);
+    createItemContainer.show();
     loading.hide();
 });
 

@@ -219,7 +219,7 @@ CREATE TABLE `equipment` (
 
 INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo`, `malfunc`) VALUES 
 #-- Corpo-a-Corpo.
-('Desarmado', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+DB', 'Toque', '1(2)', '-', '-'),
+('Desarmado', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+DB', 'Toque', '1', '-', '-'),
 ('Soqueira', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d3+1+DB', 'Toque', '1', '-', '-'),
 ('Tocha Acesa (Queimar)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d6', '3 metros', '1', '-', '-'),
 ('Cassetete', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Briga'), '1d8+DB', 'Toque', '1', '-', '-'),

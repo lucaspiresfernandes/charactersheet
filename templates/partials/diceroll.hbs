@@ -1,0 +1,28 @@
+<div class="modal fade" id="diceRoll" tabindex="-1" aria-labelledby="diceRollLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Resultado dos Dados</h5>
+            </div>
+            <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
+                {{> loading}}
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div id="diceResultContent" style="font-size: 48px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div id="diceResultDescription" style="font-size: 16px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
