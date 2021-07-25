@@ -24,9 +24,9 @@ async function nextInt(min, max, n) {
 }
 
 router.get('/single', async (req, res) => {
-    let id = req.session.playerID || req.session.adminID;
+    let playerID = req.session.playerID;
 
-    if (!id)
+    if (!playerID)
         return res.status(401).send('ID não encontrado. Você se esqueceu de logar?');
 
     let max = req.query.max;
@@ -38,39 +38,50 @@ router.get('/single', async (req, res) => {
 
     let num = (await nextInt(1, max, 1)).data[0];
     res.send({ num });
-    io.emit('dice roll', { playerID: id, max, num, type: 'single' });
+    io.emit('dice roll', { playerID, max, num, type: 'single' });
 });
 
+//TODO: Optimize Random.org calls.
 router.get('/multiple', (req, res) => {
-    let id = req.session.playerID || req.session.adminID;
+    let playerID = req.session.playerID;
+    let isAdmin = req.session.isAdmin;
 
-    if (!id)
+    if (!playerID)
         return res.status(401).send('ID não encontrado. Você se esqueceu de logar?');
 
-    let dices = req.query.dices;
+    let rawDices = req.query.dices;
+    let dices = [];
+
+    for (let i = 0; i < rawDices.length; i++) {
+        const dice = rawDices[i];
+        const n = parseInt(dice.n);
+        const num = parseInt(dice.num);
+        for (let j = 0; j < n; j++)
+            dices.push({ n: 1, num });
+    }
 
     let results = new Array(dices.length);
     let finishedLength = 0;
 
-    let totalSum = 0;
+    let sum = 0;
 
     for (let i = 0; i < dices.length; i++) {
         const dice = dices[i];
-        let n = parseInt(dice.n);
-        let num = parseInt(dice.num);
+        const n = dice.n;
+        const num = dice.num;
 
         if (isNaN(num) || isNaN(n))
             return res.status(400).send('Bad Request');
 
         if (n === 0 || num <= 1) {
             results[i] = num;
-            totalSum += num;
+            sum += num;
             finishedLength++;
 
             if (finishedLength === dices.length) {
-                console.log(results, totalSum);
-                res.send({ results: results, sum: totalSum });
-                return io.emit('dice roll', { id, dices, results, sum: totalSum, type: 'multiple' });
+                if (!isAdmin)
+                    io.emit('dice roll', { playerID, dices: rawDices, results, sum, type: 'multiple' });
+                return res.send({ results, sum });
             }
 
             continue;
@@ -82,16 +93,16 @@ router.get('/multiple', (req, res) => {
             let tempSum = 0;
             data.forEach(el => {
                 tempSum += el;
-                totalSum += el;
+                sum += el;
             });
 
             results[i] = tempSum;
             finishedLength++;
 
             if (finishedLength === dices.length) {
-                res.send({ results: results, sum: totalSum });
-                console.log(results, totalSum);
-                io.emit('dice roll', { id, dices, results, sum: totalSum, type: 'multiple' });
+                if (!isAdmin)
+                    io.emit('dice roll', { playerID, dices: rawDices, results, sum, type: 'multiple' });
+                res.send({ results, sum });
             }
         });
     }

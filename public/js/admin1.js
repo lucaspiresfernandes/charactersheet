@@ -4,6 +4,8 @@ const diceResultDescription = $('#diceResultDescription');
 diceResultDescription.hide();
 const loading = $('.loading');
 
+const failureToast = new bootstrap.Toast($('#failureToast')[0], { delay: 4000 });
+
 const generalDiceModal = new bootstrap.Modal($('#generalDiceRoll')[0]);
 const diceRollModal = new bootstrap.Modal($('#diceRoll')[0]);
 
@@ -116,6 +118,20 @@ function orderAddButtonClick(event) {
     order.append(li);
 }
 
+function adminAnotationsChange(event) {
+    const value = $(event.target).val();
+
+    $.ajax('/sheet/admin/note',
+        {
+            method: 'POST',
+            data: { value },
+            error: err => {
+                console.log(err);
+                failureToast.show();
+            }
+        });
+}
+
 socket.on('info changed', content => {
     let playerID = content.playerID;
     let infoID = content.infoID;
@@ -182,9 +198,12 @@ socket.on('equipment changed', content => {
 
     switch (type) {
         case 'create':
+            const newIcon = $(document.createElement('i'));
+            newIcon.attr('class', using ? 'bi bi-check' : 'bi bi-x');
+
             const usingRow = $(document.createElement('td'));
-            usingRow.attr('id', 'equipmentUsing');
-            usingRow.attr('class', using ? 'bi bi-check' : 'bi bi-x');
+            usingRow.attr('id', `equipmentUsing${playerID}${equipmentID}`);
+            usingRow.append(newIcon);
 
             const nameRow = $(document.createElement('td'));
             nameRow.text(name);
@@ -213,7 +232,7 @@ socket.on('equipment changed', content => {
             break;
         case 'update':
             let icon = using ? 'bi bi-check' : 'bi bi-x';
-            $(`#equipmentRow${playerID}${equipmentID} > #equipmentUsing > i`).attr('class', icon);
+            $(`#equipmentUsing${playerID}${equipmentID} > i`).attr('class', icon);
             break;
     }
 });
@@ -253,8 +272,10 @@ socket.on('item changed', content => {
 const diceList = $('#diceList');
 
 socket.on('dice roll', content => {
-    let id = content.id;
+    let id = content.playerID;
     let player = playerNames.get(id);
+    if (!player)
+        player = 'Desconhecido';
 
     let num = content.num;
     let max = content.max;
@@ -268,13 +289,10 @@ socket.on('dice roll', content => {
             const n = dice.n;
             const num = dice.num;
 
-            if (n > 0) {
-                for (let j = 0; j < n; j++)
-                    dices.push(`1d${num}`);
-            }
+            if (n > 0)
+                dices.push(`${n}d${num}`);
             else
                 dices.push(num);
-
         }
     }
 

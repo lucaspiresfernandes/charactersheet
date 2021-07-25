@@ -424,3 +424,11 @@ CREATE TABLE `admin_key`
 );
 
 INSERT INTO `admin_key` (`key`) VALUES (123456);
+
+create table `admin_note` (
+    `admin_note_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `admin_id` INT(11) UNSIGNED NOT NULL,
+    `value` MEDIUMTEXT NOT NULL,
+    PRIMARY KEY (`admin_note_id`),
+    CONSTRAINT `fk_admin_note_admin_id` FOREIGN KEY (`admin_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);

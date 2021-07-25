@@ -39,10 +39,8 @@ router.post('/', urlParser, async(req, res) =>
         if (!exists)
             return res.status(401).send('Usuário ou senha incorretos.');
 
-        if (admin)
-            req.session.adminID = id;
-        else 
-            req.session.playerID = id;
+        req.session.playerID = id;
+        req.session.isAdmin = admin;
 
         res.send({admin});
     }

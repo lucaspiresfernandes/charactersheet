@@ -27,7 +27,7 @@
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>const socket = io(); const playerNames = new Map();</script>
+    <script>const socket = io(); const playerNames = new Map(); const adminID = {{adminID}};</script>
 
     <title>{{rpgname}}</title>
 </head>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="row my-3">
-                    <script>playerNames.set({{playerID}}, '{{name.value}}')</script>
+                    <script>playerNames.set({{ playerID }}, '{{name.value}}')</script>
                     <div id="info{{playerID}}{{name.info_id}}" class="col data" style="font-size: 24px;">
                         {{name.value}}
                     </div>
@@ -138,7 +138,7 @@
                                         {{#each equipments}}
                                         {{#with this}}
                                         <tr id="equipmentRow{{../playerID}}{{equipment_id}}">
-                                            <td id="equipmentUsing">
+                                            <td id="equipmentUsing{{../playerID}}{{equipment_id}}">
                                                 <i class="{{#if using}}bi bi-check{{else}}bi bi-x{{/if}}"></i>
                                             </td>
                                             <td>
@@ -219,9 +219,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col table-wrapper" style="max-height: 280px;">
+                            <div class="col mx-3 acds-container table-wrapper" style="max-height: 280px;">
                                 <ul id="diceList" class="dice-list" style="background-color: #111;">
-                                    
                                 </ul>
                             </div>
                             <div class="col">
@@ -262,9 +261,11 @@
                         <hr>
                         <div class="row">
                             <div class="col">
+                                {{#with adminNotes}}
                                 <textarea id="adminAnotations" class="form-control acds-element"
                                     style="background-color: black !important; color: white !important;"
-                                    onchange="adminAnotationsChange(event)" rows="20">{{anotations}}</textarea>
+                                    onchange="adminAnotationsChange(event)" rows="20">{{value}}</textarea>
+                                {{/with}}
                             </div>
                         </div>
                     </div>

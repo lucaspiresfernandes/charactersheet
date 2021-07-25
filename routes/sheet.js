@@ -198,19 +198,32 @@ router.get('/2', async (req, res) => {
 });
 
 router.get('/admin/1', async (req, res) => {
-    let adminID = req.session.adminID;
+    let playerID = req.session.playerID;
+    let isAdmin = req.session.isAdmin;
 
-    if (!adminID)
-        return res.status(401).render('rejected', { message: 'ID de administrador não foi detectado. Você esqueceu de logar como administrador?' });
+    if (!playerID)
+        return res.status(401).render('rejected', { message: 'ID não foi detectado. Você esqueceu de logar?' });
+
+    if (!isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
 
     const charIDs = await con.select('player_id').from('player').where('admin', false);
     const characters = [];
+
+    const adminQueries =
+        [
+            //Admin Notes: 0
+            con.select('admin_id', 'value')
+                .from('admin_note')
+                .where('admin_id', playerID)
+                .first(),
+        ]
 
     try {
         for (let i = 0; i < charIDs.length; i++) {
             let playerID = charIDs[i].player_id;
 
-            const queries =
+            const playerQueries =
                 [
                     //Avatar: 0
                     con.select('link')
@@ -267,7 +280,7 @@ router.get('/admin/1', async (req, res) => {
                         .where('player_item.player_id', playerID),
                 ];
 
-            const results = await Promise.all(queries);
+            const results = await Promise.all(playerQueries);
             const char =
             {
                 playerID: playerID,
@@ -277,13 +290,15 @@ router.get('/admin/1', async (req, res) => {
                 specs: results[3],
                 characteristics: results[4],
                 equipments: results[5],
-                items: results[6]
+                items: results[6],
             };
 
             characters.push(char);
         }
 
-        res.render('sheetadmin1', { characters });
+        const results = await Promise.all(adminQueries);
+
+        res.render('sheetadmin1', { adminID: playerID, characters, adminNotes: results[0] });
     }
     catch (err) {
         console.log(err);
@@ -292,10 +307,14 @@ router.get('/admin/1', async (req, res) => {
 });
 
 router.get('/admin/2', async (req, res) => {
-    let adminID = req.session.adminID;
+    let playerID = req.session.playerID;
+    let isAdmin = req.session.isAdmin;
 
-    if (!adminID)
-        return res.status(401).render('rejected', { message: 'ID de administrador não foi detectado. Você esqueceu de logar como administrador?' });
+    if (!playerID)
+        return res.status(401).render('rejected', { message: 'ID não foi detectado. Você esqueceu de logar?' });
+
+    if (!isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
 
     const queries = [
         //All Equipments: 0
@@ -363,7 +382,6 @@ router.post('/player/info', urlParser, async (req, res) => {
         res.send('OK');
     }
     catch (err) {
-        console.log(err);
         console.log(err);
         res.status(500).send('Internal Server Error');
     }
@@ -569,7 +587,7 @@ router.put('/equipment', urlParser, async (req, res) => {
     let malf = req.body.malf;
 
     try {
-        let equip = await con.insert(
+        const equipmentID = (await con.insert(
             {
                 'name': name,
                 'skill_id': skillID,
@@ -578,10 +596,62 @@ router.put('/equipment', urlParser, async (req, res) => {
                 'attacks': atk,
                 'ammo': ammo,
                 'malfunc': malf
-            }).into('equipment');
-        let equipmentID = equip[0];
+            }).into('equipment'))[0];
 
         res.send({ equipmentID });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.post('/equipment', urlParser, async (req, res) => {
+
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let equipmentID = req.body.equipmentID;
+    let name = req.body.name;
+    let skillID = req.body.skillID;
+    let dmg = req.body.damage;
+    let range = req.body.range;
+    let atk = req.body.attacks;
+    let ammo = req.body.ammo;
+    let malf = req.body.malf;
+
+    try {
+        await con('equipment')
+            .update(
+                {
+                    'name': name,
+                    'skill_id': skillID,
+                    'damage': dmg,
+                    'range': range,
+                    'attacks': atk,
+                    'ammo': ammo,
+                    'malfunc': malf,
+                })
+            .where('equipment_id', equipmentID);
+        res.send('OK');
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.delete('/equipment', urlParser, async (req, res) => {
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let equipmentID = req.body.equipmentID;
+
+    try {
+        await con('equipment')
+            .where('equipment_id', equipmentID)
+            .del();
+        res.send('OK');
     }
     catch (err) {
         console.log(err);
@@ -666,6 +736,53 @@ router.put('/skill', urlParser, async (req, res) => {
         let skillID = skill[0];
 
         res.send({ skillID });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.post('/skill', urlParser, async (req, res) => {
+
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let skillID = req.body.skillID;
+    let specializationID = req.body.specializationID;
+    let name = req.body.name;
+    let mandatory = req.body.mandatory === 'true';
+    let startValue = req.body.startValue;
+
+    try {
+        await con('skill')
+            .update(
+                {
+                    'specialization_id': specializationID,
+                    'name': name,
+                    'mandatory': mandatory,
+                    'start_value': startValue,
+                })
+            .where('skill_id', skillID);
+        res.send('OK');
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.delete('/skill', urlParser, async (req, res) => {
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let skillID = req.body.skillID;
+
+    try {
+        await con('skill')
+            .where('skill_id', skillID)
+            .del();
+        res.send('OK');
     }
     catch (err) {
         console.log(err);
@@ -811,6 +928,49 @@ router.put('/item', urlParser, async (req, res) => {
     }
 });
 
+router.post('/item', urlParser, async (req, res) => {
+
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let itemID = req.body.itemID;
+    let name = req.body.name;
+    let description = req.body.description;
+
+    try {
+        await con('item')
+            .update(
+                {
+                    'name': name,
+                    'description': description,
+                })
+            .where('item_id', itemID);
+        res.send('OK');
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.delete('/item', urlParser, async (req, res) => {
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let itemID = req.body.itemID;
+
+    try {
+        await con('item')
+            .where('item_id', itemID)
+            .del();
+        res.send('OK');
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 router.post('/player/extrainfo', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
@@ -833,6 +993,28 @@ router.post('/player/extrainfo', urlParser, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+router.post('/admin/note', urlParser, async (req, res) => {
+    let playerID = req.session.playerID;
+
+    if (!playerID)
+        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+    if (!req.session.isAdmin)
+        return res.status(401).render('rejected', { message: 'Não é um administrador.' });
+
+    let value = req.body.value;
+
+    try {
+        await con('admin_note')
+            .update('value', value)
+            .where('admin_id', playerID);
+        res.send('OK');
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+})
 //#endregion
 
 module.exports = router;

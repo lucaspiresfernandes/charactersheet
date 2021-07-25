@@ -60,6 +60,7 @@ function rollDices(dices)
     loading.show();
     function onSuccess(data)
     {
+        console.log(data);
         let sum = data.sum;
         let results = data.results;
 

@@ -57,18 +57,17 @@ async function registerPost(req, res)
 
         let hash = await encrypter.encrypt(password);
         
-        await con.insert(
+        const playerID = (await con.insert(
         {
             username: username,
             password: hash,
             admin: admin
-        }).into('player');
-
-        if (!admin)
-        {
-            const id = await con.select('player_id').from('player').where('username', username).first();
-            registerPlayerData(id.player_id);
-        }
+        }).into('player'))[0];
+        
+        if (admin)
+            registerAdminData(playerID);
+        else
+            registerPlayerData(playerID);
 
         res.send('Conta criada com sucesso!');
     }
@@ -237,6 +236,11 @@ function registerPlayerData(playerID)
         current_ammo: '-'
     }).into('player_equipment').then(() =>
     {});
+}
+
+function registerAdminData(playerID)
+{
+    con.insert({'admin_id': playerID, 'value': ''}).into('admin_note').then(() => {});
 }
 
 module.exports = router;

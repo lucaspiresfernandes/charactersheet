@@ -20,7 +20,7 @@ app.set('view engine', 'hbs');
 app.set('views', viewsPath);
 hbsutils.registerPartials(partialsPath, {precompile: true});
 app.use(express.static(publicPath));
-app.use(session({secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: false}));
+app.use(session({secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: false, cookie: {sameSite: 'strict'}}));
 
 registerHelpers();
 
