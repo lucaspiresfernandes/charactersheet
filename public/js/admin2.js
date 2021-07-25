@@ -259,9 +259,6 @@ function createSkillClick(event)
     let specializationID = createSkillSpecialization.val();
     let name = createSkillName.val();
 
-    if (specializationID === '0')
-        specializationID = null;
-
     $.ajax('/sheet/skill',
     {
         method: 'PUT',

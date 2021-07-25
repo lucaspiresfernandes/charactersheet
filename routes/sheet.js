@@ -668,7 +668,8 @@ router.put('/player/skill', urlParser, async (req, res) => {
     let skillID = req.body.skillID;
 
     try {
-        await con.insert({ 'player_id': playerID, 'skill_id': skillID, 'value': 0, 'checked': false })
+        const subquery = con.select('start_value').from('skill').where('skill_id', skillID);
+        await con.insert({ 'player_id': playerID, 'skill_id': skillID, 'value': subquery, 'checked': false })
             .into('player_skill');
 
         const skill = await con.select('skill.skill_id', 'skill.name', 'specialization.name as specialization_name', 'player_skill.value', 'player_skill.checked')
@@ -719,15 +720,15 @@ router.post('/player/skill', urlParser, async (req, res) => {
 });
 
 router.put('/skill', urlParser, async (req, res) => {
-    let specID = req.body.specializationID;
-    if (specID === '')
-        specID = null;
+    let specializationID = req.body.specializationID;
+    if (specializationID === '0')
+        specializationID = null;
     let name = req.body.name;
 
     try {
         let skill = await con.insert(
             {
-                'specialization_id': specID,
+                'specialization_id': specializationID,
                 'name': name,
                 'mandatory': false,
                 'start_value': 0
@@ -750,6 +751,8 @@ router.post('/skill', urlParser, async (req, res) => {
 
     let skillID = req.body.skillID;
     let specializationID = req.body.specializationID;
+    if (specializationID === '0')
+        specializationID = null;
     let name = req.body.name;
     let mandatory = req.body.mandatory === 'true';
     let startValue = req.body.startValue;
