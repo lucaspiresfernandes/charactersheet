@@ -50,12 +50,18 @@ router.get('/multiple', (req, res) => {
         return res.status(401).send('ID não encontrado. Você se esqueceu de logar?');
 
     let rawDices = req.query.dices;
+
     let dices = [];
 
-    for (let i = 0; i < rawDices.length; i++) {
+    for (let i = 0; i < rawDices.length; i++)
+    {
         const dice = rawDices[i];
         const n = parseInt(dice.n);
         const num = parseInt(dice.num);
+
+        if (n === 0)
+            dices.push({ n, num });
+
         for (let j = 0; j < n; j++)
             dices.push({ n: 1, num });
     }

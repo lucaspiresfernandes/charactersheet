@@ -652,6 +652,11 @@ function equipmentAmmoChange(ev, equipmentID)
 
 function equipmentDiceClick(ev, id)
 {
+    const using = $(`#equipmentUsing${id}`).prop('checked');
+
+    if (!using)
+        return alert('Você não está usando esse equipamento.');
+    
     const damageField = $(`#equipmentDamage${id}`);
     const ammoTxt = $(`#equipmentAmmo${id}`);
 
