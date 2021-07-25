@@ -1,6 +1,6 @@
 # Ficha de Personagem (Character Sheet)
 
-## Aplicativo Web feito para os jogadores e mestres, inspirado por "Ordem Paranormal" de Cellbit.
+## Aplicativo Web feito para jogadores e mestres, inspirado por "Ordem Paranormal" de Cellbit.
 
 ACDS RPG foi desenvolvido da seguinte forma:
   - Backend: Node.js com banco de dados MySQL.
