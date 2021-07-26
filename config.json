@@ -1,8 +1,8 @@
 {
     "info": {
-        "rpgname": "As Crônicas das Sombras",
-        "rpgacronym": "ACDS",
-        "playerrole": "Caçador"
+        "rpgname": "Demo",
+        "rpgacronym": "DEMO",
+        "playerrole": "Investigador"
     },
     "encryption": {
         "saltRounds": 10
