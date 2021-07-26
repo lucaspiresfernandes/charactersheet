@@ -42,7 +42,8 @@ router.post('/', jsonParser, async (req, res) =>
         
         const query = con('player_avatar')
         .update({'link': link})
-        .where('avatar_id', avatarID);
+        .where('avatar_id', avatarID)
+        .andWhere('player_id', playerID);
     
         queries.push(query);
     }
