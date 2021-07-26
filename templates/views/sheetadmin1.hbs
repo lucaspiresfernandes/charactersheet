@@ -27,7 +27,7 @@
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>const socket = io(); const playerNames = new Map(); const adminID = {{adminID}};</script>
+    <script>const socket = io(); const playerNames = new Map(); const adminID = {{ adminID }};</script>
 
     <title>{{rpgname}}</title>
 </head>
@@ -236,9 +236,17 @@
                                         <ul id="order" class="sortable" style="position: relative; left: 20%;">
                                             {{#each characters}}
                                             <li class="ui-state-default">
-                                                {{name.value}}
-                                                <input type="text" class="acds-element acds-bottom-text"
-                                                    style="color: darkgray; max-width: 3rem;" maxlength="3">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        {{name.value}}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="text" class="acds-element acds-bottom-text"
+                                                            style="color: darkgray; max-width: 3rem;" maxlength="3">
+                                                    </div>
+                                                </div>
                                             </li>
                                             {{/each}}
                                         </ul>

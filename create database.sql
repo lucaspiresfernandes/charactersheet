@@ -3,7 +3,7 @@ create database charactersheet;
 use charactersheet;
 
 CREATE TABLE `player` (
-    `player_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `username` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
     `admin` BOOLEAN NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE `player` (
 );
 
 CREATE TABLE `characteristic` (
-    `characteristic_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `characteristic_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `rollable` BOOLEAN NOT NULL,
     PRIMARY KEY (`characteristic_id`)
@@ -28,9 +28,9 @@ INSERT INTO `characteristic` (`name`, `rollable`) VALUES ('Educação', TRUE);
 INSERT INTO `characteristic` (`name`, `rollable`) VALUES ('Movimento', FALSE);
 
 CREATE TABLE `player_characteristic` (
-    `player_characteristic_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `characteristic_id` int(11) UNSIGNED NOT NULL,
+    `player_characteristic_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `characteristic_id` INT UNSIGNED NOT NULL,
     `value` bigint NOT NULL,
     PRIMARY KEY (`player_characteristic_id`),
     CONSTRAINT `uk_player_id_characteristic_id` UNIQUE (`player_id`, `characteristic_id`),
@@ -39,7 +39,7 @@ CREATE TABLE `player_characteristic` (
 );
 
 CREATE TABLE `specialization` (
-    `specialization_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `specialization_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`specialization_id`)
 );
@@ -53,11 +53,11 @@ INSERT INTO `specialization` (`name`) VALUES ('Pilotar');
 INSERT INTO `specialization` (`name`) VALUES ('Sobrevivência');
 
 CREATE TABLE `skill` (
-    `skill_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `specialization_id` int(11) UNSIGNED NULL,
+    `skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `specialization_id` INT UNSIGNED NULL,
     `name` varchar(255) NOT NULL,
     `mandatory` BOOLEAN NOT NULL,
-    `start_value` int(11) UNSIGNED NOT NULL,
+    `start_value` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`skill_id`),
     CONSTRAINT `fk_skill_specialization_id` FOREIGN KEY (`specialization_id`) REFERENCES `specialization`(`specialization_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -143,10 +143,10 @@ INSERT INTO `skill` (`specialization_id`, `name`, `start_value`, `mandatory`) VA
 INSERT INTO `skill` (`specialization_id`, `name`, `start_value`, `mandatory`) VALUES (NULL, 'Usar Computadores', 5, FALSE);
 
 CREATE TABLE `player_skill` (
-    `player_skill_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `skill_id` int(11) UNSIGNED NOT NULL,
-    `value` int(11) NOT NULL,
+    `player_skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `skill_id` INT UNSIGNED NOT NULL,
+    `value` INT NOT NULL,
     `checked` BOOLEAN NOT NULL,
     PRIMARY KEY (`player_skill_id`),
     CONSTRAINT `uk_player_id_skill_id` UNIQUE (`player_id`, `skill_id`),
@@ -155,7 +155,7 @@ CREATE TABLE `player_skill` (
 );
 
 CREATE TABLE `attribute` (
-    `attribute_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `attribute_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `rollable` BOOLEAN NOT NULL,
     `bg_color` varchar(6) NOT NULL,
@@ -169,8 +169,8 @@ INSERT INTO `attribute` (`name`, `rollable`, `bg_color`, `fill_color`) VALUES ('
 INSERT INTO `attribute` (`name`, `rollable`, `bg_color`, `fill_color`) VALUES ('Magia', 0, '682f5b', 'ae00ff');
 
 CREATE TABLE `attribute_status` (
-    `attribute_status_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `attribute_id` int(11) UNSIGNED NOT NULL,
+    `attribute_status_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `attribute_id` INT UNSIGNED NOT NULL,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`attribute_status_id`),
     CONSTRAINT `fk_attribute_status_attribute_id` FOREIGN KEY (`attribute_id`) REFERENCES `attribute`(`attribute_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -182,11 +182,11 @@ INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Traumatizado', 
 INSERT INTO `attribute_status` (`name`, `attribute_id`) VALUES ('Enlouquecido', 3);
 
 CREATE TABLE `player_attribute` (
-    `player_attribute_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `attribute_id` int(11) UNSIGNED NOT NULL,
-    `value` int(11) NOT NULL,
-    `max_value` int(11) NOT NULL,
+    `player_attribute_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `attribute_id` INT UNSIGNED NOT NULL,
+    `value` INT NOT NULL,
+    `max_value` INT NOT NULL,
     PRIMARY KEY (`player_attribute_id`),
     CONSTRAINT `uk_player_id_attribute_id` UNIQUE (`player_id`, `attribute_id`),
     CONSTRAINT `fk_player_attribute_player_id` FOREIGN KEY (`player_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -194,9 +194,9 @@ CREATE TABLE `player_attribute` (
 );
 
 CREATE TABLE `player_attribute_status` (
-    `player_attribute_status_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `attribute_status_id` int(11) UNSIGNED NOT NULL,
+    `player_attribute_status_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `attribute_status_id` INT UNSIGNED NOT NULL,
     `value` BOOLEAN NOT NULL,
     PRIMARY KEY (`player_attribute_status_id`),
     CONSTRAINT `uk_player_id_attribute_status_id` UNIQUE (`player_id`, `attribute_status_id`),
@@ -205,9 +205,9 @@ CREATE TABLE `player_attribute_status` (
 );
 
 CREATE TABLE `equipment` (
-    `equipment_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `equipment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
-    `skill_id` int(11) UNSIGNED NOT NULL,
+    `skill_id` INT UNSIGNED NOT NULL,
     `damage` varchar(255) NOT NULL,
     `range` varchar(255) NOT NULL,
     `attacks` varchar(255) NOT NULL,
@@ -245,25 +245,45 @@ INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo
 ('Arco e Flecha', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Arcos'), '1d6+DB/2', '30 metros', '1', '1', '97'),
 ('Besta', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Arcos'), '1d8+2', '50 metros', '1', '1', '96'),
 ('Revólver .41', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10', '20 metros', '1(3)', '8', '100'),
+('Revolver .44', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10+1d4+2', '15 metros', '1(3)', '6', '100'),
+('Revólver .45', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10+2', '13 metros', '1(3)', '6', '100'),
 ('Glock 9mm', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10', '15 metros', '1(3)', '17', '98'),
 ('IME Desert Eagle', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Pistolas'), '1d10+1d6+3', '20 metros', '1(3)', '7', '94'),
 #-- Rifles e Espingardas
 ('Barrett Model 82', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d10+1d8+6', '250 metros', '1', '11', '96'),
+('Carabina de Alavanca .30', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '50 metros', '1', '6', '98'),
+('Rifle Martini-Henry .45', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '1D8+1D6+3', '80 metros', '1', '1', '100'),
+('Carabina SKS', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2D6+1', '90 metros', '1(2)', '10', '97'),
+('Rifle Marlin .444', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2D8+4', '110 metros', '1', '5', '98'),
+('Espingarda cal. 20', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6/1d6/1d3', '10/20/50 metros', '1(2)', '2', '100'),
+('Espingarda cal. 16', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6+2/1d6+1/1d4', '10/20/50 metros', '1(2)', '2', '100'),
+('Espingarda cal. 12 (Semi)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '4d6/2d6/1d6', '10/20/50 metros', '1(2)', '5', '100'),
+('Escopeta Serrada cal. 12', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '4d6/1d6', '5/10 metros', '1(2)', '2', '100'),
+('Benelli M3 cal. 12', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '4d6/2d6/1d6', '10/20/50 metros', '1(2)', '7', '100'),
 #-- Fuzis de Assalto
 ('AK-47', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6+1', '100 metros', '1(2)/Auto', '30', '100'),
+('AK-74', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '110 metros', '1(2)/Auto', '30', '97'),
 ('M16A2', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '110 metros', '1(2)/Rajada', '30', '97'),
 ('M4', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '90 metros', '1/Rajada', '30', '97'),
+('FN FAL', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6+4', '110 metros', '1(2)/Rajada', '20', '97'),
+('Steyr AUG', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Rifles/Espingardas'), '2d6', '110 metros', '1(2)/Auto', '30', '99'),
 #--Submetralhadoras
 ('Thompson (20)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '20', '96'),
 ('Thompson (30)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '30', '96'),
 ('Thompson (50)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '50', '96'),
 ('UZI', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10', '20 metros', '1(2)/Auto', '32', '98'),
 ('Skorpion', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d8', '15 metros', '1(3)/Auto', '20', '96');
+#--Metralhadoras
+('Gatling Gun 1882', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '100 metros', 'Auto', '200', '96');
+('Browning Auto Rifle M1918', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '90 metros', '1(2)/Auto', '20', '100');
+('Browning M1917A1 .30', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '150 metros', 'Auto', '250', '96');
+('FN Minimi 5.56mm (30)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6', '110 metros', 'Auto', '30', '99');
+('FN Minimi 5.56mm (200)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6', '110 metros', 'Auto', '200', '99');
 
 CREATE TABLE `player_equipment` (
-    `player_equipment_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `equipment_id` int(11) UNSIGNED NOT NULL,
+    `player_equipment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `equipment_id` INT UNSIGNED NOT NULL,
     `current_ammo` varchar(255) NOT NULL,
     `using` BOOLEAN NOT NULL,
     PRIMARY KEY (`player_equipment_id`),
@@ -273,7 +293,7 @@ CREATE TABLE `player_equipment` (
 );
 
 CREATE TABLE `spec` (
-    `spec_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `spec_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`spec_id`)
 );
@@ -283,9 +303,9 @@ INSERT INTO `spec` (`name`) VALUES ('Corpo');
 INSERT INTO `spec` (`name`) VALUES ('Exposição Paranormal');
 
 CREATE TABLE `player_spec` (
-    `player_spec_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `spec_id` int(11) UNSIGNED NOT NULL,
+    `player_spec_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `spec_id` INT UNSIGNED NOT NULL,
     `value` varchar(255) NOT NULL,
     PRIMARY KEY (`player_spec_id`),
     CONSTRAINT `uk_player_id_spec_id` UNIQUE (`player_id`, `spec_id`),
@@ -294,7 +314,7 @@ CREATE TABLE `player_spec` (
 );
 
 CREATE TABLE `item` (
-    `item_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `item_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `description` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`item_id`)
@@ -309,12 +329,15 @@ INSERT INTO `item` (`name`, `description`) VALUES ('Chapa de Identificação', '
 ('Mala', 'Uma mala comum. Descreva aqui seu tamanho e sua capacidade.'),
 ('Bolsa', 'Uma bolsa comum. Descreva aqui seu tamanho e sua capacidade.'),
 ('Relógio', 'Um relógio comum.'),
-('Carteira', 'Uma carteira comum.');
+('Carteira', 'Uma carteira comum.'),
+('Livro', 'Um livro comum. Descreva aqui o conteúdo do livro.'),
+('Livro de Ocultismo', 'Um livro de ocultismo. Descreva aqui seu conteúdo.'),
+('Kit Médico', 'Um kit médico que garante vantagem no uso.');
 
 CREATE TABLE `player_item` (
-    `player_item_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `item_id` int(11) UNSIGNED NOT NULL,
+    `player_item_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `item_id` INT UNSIGNED NOT NULL,
     `description` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`player_item_id`),
     CONSTRAINT `uk_player_id_item_id` UNIQUE (`player_id`, `item_id`),
@@ -323,7 +346,7 @@ CREATE TABLE `player_item` (
 );
 
 CREATE TABLE `info` (
-    `info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `info_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`info_id`)
 );
@@ -339,9 +362,9 @@ INSERT INTO `info` (`name`) VALUES ('Peso');
 INSERT INTO `info` (`name`) VALUES ('Altura');
 
 CREATE TABLE `player_info` (
-    `player_info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `info_id` int(11) UNSIGNED NOT NULL,
+    `player_info_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `info_id` INT UNSIGNED NOT NULL,
     `value` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`player_info_id`),
     CONSTRAINT `uk_player_id_info_id` UNIQUE (`player_id`, `info_id`),
@@ -350,7 +373,7 @@ CREATE TABLE `player_info` (
 );
 
 CREATE TABLE `extra_info` (
-    `extra_info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `extra_info_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`extra_info_id`)
 );
@@ -364,9 +387,9 @@ INSERT INTO `extra_info` (`name`) VALUES ('Fobias e Manias');
 INSERT INTO `extra_info` (`name`) VALUES ('Notas');
 
 CREATE TABLE `player_extra_info` (
-    `player_extra_info_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `extra_info_id` int(11) UNSIGNED NOT NULL,
+    `player_extra_info_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `extra_info_id` INT UNSIGNED NOT NULL,
     `value` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`player_extra_info_id`),
     CONSTRAINT `uk_player_id_extra_info_id` UNIQUE (`player_id`, `extra_info_id`),
@@ -375,7 +398,7 @@ CREATE TABLE `player_extra_info` (
 );
 
 CREATE TABLE `finance` (
-    `finance_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `finance_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`finance_id`)
 );
@@ -384,9 +407,9 @@ INSERT INTO `finance` (`name`) VALUES ('Nível de Gasto Diário');
 INSERT INTO `finance` (`name`) VALUES ('Dinheiro');
 
 CREATE TABLE `player_finance` (
-    `player_finance_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `finance_id` int(11) UNSIGNED NOT NULL,
+    `player_finance_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `finance_id` INT UNSIGNED NOT NULL,
     `value` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`player_finance_id`),
     CONSTRAINT `uk_player_id_finance_id` UNIQUE (`player_id`, `finance_id`),
@@ -395,7 +418,7 @@ CREATE TABLE `player_finance` (
 );
 
 CREATE TABLE `avatar` (
-    `avatar_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `avatar_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`avatar_id`)
 );
@@ -407,9 +430,9 @@ INSERT INTO `avatar` (`name`) VALUES ('Louco');
 INSERT INTO `avatar` (`name`) VALUES ('Ferido e Louco');
 
 CREATE TABLE `player_avatar` (
-    `player_avatar_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `player_id` int(11) UNSIGNED NOT NULL,
-    `avatar_id` int(11) UNSIGNED NOT NULL,
+    `player_avatar_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `player_id` INT UNSIGNED NOT NULL,
+    `avatar_id` INT UNSIGNED NOT NULL,
     `link` MEDIUMTEXT NULL,
     PRIMARY KEY (`player_avatar_id`),
     CONSTRAINT `uk_player_id_avatar_id` UNIQUE (`player_id`, `avatar_id`),
@@ -419,15 +442,15 @@ CREATE TABLE `player_avatar` (
 
 CREATE TABLE `admin_key`
 (
-    `key` int(11) UNSIGNED NOT NULL,
+    `key` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`key`)
 );
 
 INSERT INTO `admin_key` (`key`) VALUES (123456);
 
 create table `admin_note` (
-    `admin_note_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `admin_id` INT(11) UNSIGNED NOT NULL,
+    `admin_note_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `admin_id` INT UNSIGNED NOT NULL,
     `value` MEDIUMTEXT NOT NULL,
     PRIMARY KEY (`admin_note_id`),
     CONSTRAINT `fk_admin_note_admin_id` FOREIGN KEY (`admin_id`) REFERENCES `player`(`player_id`) ON DELETE CASCADE ON UPDATE CASCADE
