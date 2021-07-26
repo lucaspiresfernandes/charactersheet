@@ -27,7 +27,7 @@
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>const socket = io(); const playerNames = new Map(); const adminID = {{ adminID }};</script>
+    <script>const socket = io(); const playerNames = new Map(); const adminID = {{adminID}};</script>
 
     <title>{{rpgname}}</title>
 </head>
@@ -233,20 +233,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <ul id="order" class="sortable" style="position: relative; left: 20%;">
+                                        <ul id="order" class="sortable">
                                             {{#each characters}}
                                             <li class="ui-state-default">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        {{name.value}}
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <input type="text" class="acds-element acds-bottom-text"
-                                                            style="color: darkgray; max-width: 3rem;" maxlength="3">
-                                                    </div>
-                                                </div>
+                                                {{name.value}}
+                                                <input type="text" class="acds-element acds-bottom-text"
+                                                    style="color: darkgray; max-width: 3rem;" maxlength="3">
                                             </li>
                                             {{/each}}
                                         </ul>
