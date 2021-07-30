@@ -16,7 +16,7 @@ As variáveis de ambiente são:
 
 O SQL para criar o banco de dados está nomeado como "create database.sql", e pode ser tanto executado como importado pra criar o ambiente.
 
-Há uma rota escondida só pra mestres, que é "/register/keeper", onde a chave do mestre é "123456", como definida no banco de dados.
+Há uma rota escondida só pra mestres, que é "/register/admin", onde a chave do mestre/adm é "123456", como definida no banco de dados.
 
 É possível fazer um playtest em https://charactersheet-demo.herokuapp.com/.
 
