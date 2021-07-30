@@ -118,6 +118,25 @@
                 </div>
                 <hr>
                 <div class="row my-3">
+                    {{#each finances}}
+                    {{#with this}}
+                    <div class="col">
+                        <div class="row">
+                            <div id="finance{{../playerID}}{{finance_id}}" class="col data">
+                                {{value}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{name}}
+                            </div>
+                        </div>
+                    </div>
+                    {{/with}}
+                    {{/each}}
+                </div>
+                <hr>
+                <div class="row my-3">
                     <div class="col">
                         <div class="row">
                             <div class="col data">

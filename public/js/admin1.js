@@ -182,6 +182,14 @@ socket.on('characteristic changed', content => {
     $(`#characteristic${playerID}${charID}`).text(value);
 });
 
+socket.on('finance changed', content => {
+    let playerID = content.playerID;
+    let financeID = content.financeID;
+    let value = content.value;
+    
+    $(`#finance${playerID}${financeID}`).text(value);
+})
+
 socket.on('equipment changed', content => {
     let playerID = content.playerID;
     let equipmentID = content.equipmentID;

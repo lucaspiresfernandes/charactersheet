@@ -278,6 +278,12 @@ router.get('/admin/1', async (req, res) => {
                         .from('item')
                         .join('player_item', 'item.item_id', 'player_item.item_id')
                         .where('player_item.player_id', playerID),
+
+                    //Finances: 7
+                    con.select('finance.*', 'player_finance.value')
+                        .from('finance')
+                        .join('player_finance', 'finance.finance_id', 'player_finance.finance_id')
+                        .where('player_finance.player_id', playerID)
                 ];
 
             const results = await Promise.all(playerQueries);
@@ -291,6 +297,7 @@ router.get('/admin/1', async (req, res) => {
                 characteristics: results[4],
                 equipments: results[5],
                 items: results[6],
+                finances: results[7],
             };
 
             characters.push(char);
@@ -808,6 +815,7 @@ router.post('/player/finance', urlParser, async (req, res) => {
             .where('player_id', playerID)
             .andWhere('finance_id', financeID);
 
+        io.emit('finance changed', {playerID, financeID, value});
         res.end();
     }
     catch (err) {

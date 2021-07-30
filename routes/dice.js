@@ -39,7 +39,6 @@ router.get('/single', async (req, res) => {
     io.emit('dice roll', { playerID, max, num, type: 'single' });
 });
 
-//TODO: Optimize Random.org calls.
 router.get('/multiple', async (req, res) => {
     let playerID = req.session.playerID;
     let isAdmin = req.session.isAdmin;
