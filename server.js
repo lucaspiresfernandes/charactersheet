@@ -18,9 +18,9 @@ const publicPath = path.join(__dirname, './public');
 
 app.set('view engine', 'hbs');
 app.set('views', viewsPath);
-hbsutils.registerPartials(partialsPath, {precompile: true});
+hbsutils.registerPartials(partialsPath, { precompile: true });
 app.use(express.static(publicPath));
-app.use(session({secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: false, cookie: {sameSite: 'strict'}}));
+app.use(session({ secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: false, cookie: { sameSite: 'strict' } }));
 
 registerHelpers();
 
@@ -34,8 +34,7 @@ const dice = require('./routes/dice');
 const avatar = require('./routes/avatar');
 //End Routes
 
-app.get('/', (req, res) =>
-{
+app.get('/', (req, res) => {
     res.render('home');
 });
 
@@ -45,15 +44,12 @@ app.use('/sheet', sheet);
 app.use('/dice', dice);
 app.use('/avatar', avatar);
 
-app.get('*', (req, res) =>
-{
-    res.status(404).send('Not Found');
+app.get('*', (req, res) => {
+    res.status(404).end();
 });
 
-module.exports.start = () =>
-{
-    server.listen(port, () =>
-    {
+module.exports.start = () => {
+    server.listen(port, () => {
         console.log(`Listening to port ${port}...`);
     });
 };

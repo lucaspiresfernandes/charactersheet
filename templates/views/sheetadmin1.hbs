@@ -27,7 +27,7 @@
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>const socket = io(); const playerNames = new Map(); const adminID = {{adminID}};</script>
+    <script>const socket = io(); const playerNames = new Map(); const adminID = {{ adminID }};</script>
 
     <title>{{rpgname}}</title>
 </head>
@@ -263,7 +263,6 @@
                             <div class="col">
                                 {{#with adminNotes}}
                                 <textarea id="adminAnotations" class="form-control acds-element"
-                                    style="background-color: black !important; color: white !important;"
                                     onchange="adminAnotationsChange(event)" rows="20">{{value}}</textarea>
                                 {{/with}}
                             </div>

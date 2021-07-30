@@ -1,108 +1,101 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>{{rpgname}}</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    </head>
-    <body>
-        <h1>Registrar</h1>
-        <form id="registerForm">
-            <p>
-                <input type="text" placeholder="Login" name="username" id="username" required/>
-                <input type="password" placeholder="Senha" name="password" id="password" required/>
-                <input type="password" placeholder="Confirmar Senha" id="confirmpassword" required/>
-                {{#if admin}}
-                <input type="password" placeholder="Chave do Administrador" name="adminKey" id="adminKey" required/>
-                {{/if}}
-            </p>
-            <p>
-                <input type="submit" value="Registrar"/>
-            </p>
-        </form>
 
-        <p>Já possui cadastro? <a href="/login">Conectar-se</a></p>
-        
-        <script>
-            const pass = $('#password');
-            const confirmPass = $('#confirmpassword');
-            const registerForm = $('#registerForm')
+<head>
+    <meta charset="utf-8">
+    <title>{{rpgname}}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
 
-            function validatePassword()
+<body>
+    <h1>Registrar</h1>
+    <form id="registerForm">
+        <p>
+            <input type="text" placeholder="Login" name="username" id="username" required />
+            <input type="password" placeholder="Senha" name="password" id="password" required />
+            <input type="password" placeholder="Confirmar Senha" id="confirmpassword" required />
+            {{#if admin}}
+            <input type="password" placeholder="Chave do Administrador" name="adminKey" id="adminKey" required />
+            {{/if}}
+        </p>
+        <p>
+            <input type="submit" value="Registrar" />
+        </p>
+    </form>
+
+    <p>Já possui cadastro? <a href="/login">Conectar-se</a></p>
+
+    <script>
+        const pass = $('#password');
+        const confirmPass = $('#confirmpassword');
+        const registerForm = $('#registerForm')
+
+        function validatePassword() {
+            if (pass.val() != confirmPass.val())
+                confirmPass[0].setCustomValidity("As senhas não coincidem.");
+            else
+                confirmPass[0].setCustomValidity('');
+        }
+
+        pass[0].onchange = validatePassword;
+        confirmPass[0].onkeyup = validatePassword;
+
+        function onRegisterSuccess() {
+            const success = $(document.createElement('p'));
+            success.css({ color: 'green', fontSize: '24' })
+                .text(`Cadastro realizado com sucesso! - Redirecionando para a página de login...`);
+
+            $('body').append(success);
+
+            setTimeout(() => {
+                location.replace('/login');
+            }, 2500);
+        }
+
+        function onRegisterFail(err) {
+            const error = $(document.createElement('p'));
+            error.css({ color: 'red', fontSize: '24' })
+                .text(`Erro: ${err.responseText}`);
+
+            $('body').append(error);
+
+            setTimeout(() => {
+                error.fadeOut(2000, () => error.remove());
+            }, 500);
+
+            console.error(`Server: ${err}`);
+
+            registerForm.show();
+        }
+
+        registerForm.submit(ev => {
+            ev.preventDefault();
+
+            registerForm.hide();
+
+            const username = $('#username').val();
+            const password = pass.val();
+            pass.val('');
+
+            confirmPass.val('');
+
+            const data = { username, password };
+            { {#if admin } }
+            const adminKey = $('#adminKey').val();
+            data.adminKey = adminKey;
             {
-                if(pass.val() != confirmPass.val())
-                    confirmPass[0].setCustomValidity("As senhas não coincidem.");
-                else
-                    confirmPass[0].setCustomValidity('');
-            }
-
-            pass[0].onchange = validatePassword;
-            confirmPass[0].onkeyup = validatePassword;
-
-            function onRegisterSuccess(msg)
-            {
-                const successElement = document.createElement('p');
-                const success = $(successElement);
-
-                success.css('color', 'green');
-                success.css('font-size', 24);
-                success.text(`${msg} - Redirecionando para a página de login...`);
-
-                $('body').append(successElement);
-
-                setTimeout(() =>
                 {
-                    location.replace('/login');
-                }, 2500);
-            }
+                    /if}}
 
-            function onRegisterFail(err)
-            {
-                const errorElement = document.createElement('p');
-                const error = $(errorElement);
-
-                error.css('color', 'red');
-                error.css('font-size', 24);
-                error.text(`Erro: ${err.responseText}`);
-
-                $('body').append(errorElement);
-
-                setTimeout(() =>
-                {
-                    error.fadeOut(2000, () => error.remove());
-                }, 500);
-
-                console.error(`Server: ${err}`);
-
-                registerForm.show();
-            }
-
-            registerForm.submit(ev =>
-            {
-                ev.preventDefault();
-
-                registerForm.hide();
-                
-                const username = $('#username').val();
-                const password = pass.val();
-                pass.val('');
-                
-                confirmPass.val('');
-
-                const data = { username, password };
-                {{#if admin}}
-                const adminKey = $('#adminKey').val();
-                data.adminKey = adminKey;
-                {{/if}}
-
-                $.ajax('/register', 
-                {
-                    method: 'POST',
-                    data: data,
-                    success: onRegisterSuccess,
-                    error: onRegisterFail
+                    $.ajax('/register',
+                        {
+                            method: 'POST',
+                            data: data,
+                            success: onRegisterSuccess,
+                            error: onRegisterFail
+                        });
                 });
-            });
-        </script>
-    </body>
+    </script>
+</body>
+
 </html>

@@ -4,12 +4,20 @@ const diceResultDescription = $('#diceResultDescription');
 diceResultDescription.hide();
 const loading = $('.loading');
 
-const failureToast = new bootstrap.Toast($('#failureToast')[0], { delay: 4000 });
-
 const generalDiceModal = new bootstrap.Modal($('#generalDiceRoll')[0]);
 const diceRollModal = new bootstrap.Modal($('#diceRoll')[0]);
 
 const generalDiceText = $('#generalDiceText');
+
+const failureToast = new bootstrap.Toast($('#failureToast')[0], { delay: 4000 });
+const failureToastBody = $('#failureToast > .toast-body');
+
+//General
+function showFailureToastMessage(err) {
+    console.log(err);
+    failureToastBody.text(`Erro ao tentar aplicar mudança - ${err.text}`);
+    failureToast.show();
+}
 
 $('#generalDiceRoll').on('shown.bs.modal', ev => {
     generalDiceText[0].focus();
@@ -30,24 +38,21 @@ function rollDices(dices) {
         let results = data.results;
 
         loading.hide();
-        diceResultContent.text(sum);
-        diceResultContent.fadeIn('slow', () => {
-            if (results.length <= 1)
-                return;
+        diceResultContent.text(sum)
+            .fadeIn('slow', () => {
+                if (results.length <= 1)
+                    return;
 
-            diceResultDescription.text(results.join(' + '));
-            diceResultDescription.fadeIn('slow');
-        });
+                diceResultDescription.text(results.join(' + '))
+                    .fadeIn('slow');
+            });
     }
 
     $.ajax('/dice/multiple',
         {
             data: { dices },
             success: onSuccess,
-            error: err => {
-                failureToast.show();
-                console.log(err);
-            }
+            error: showFailureToastMessage
         });
 }
 
@@ -79,10 +84,10 @@ function resolveDice(dice, arr) {
 }
 
 $('#diceRoll').on('hidden.bs.modal', ev => {
-    diceResultContent.text('');
-    diceResultContent.hide();
-    diceResultDescription.text('');
-    diceResultDescription.hide();
+    diceResultContent.text('')
+        .hide();
+    diceResultDescription.text('')
+        .hide();
 });
 
 const order = $('#order');
@@ -90,30 +95,25 @@ const orderAddText = $('#orderAddText');
 
 function orderAddButtonClick(event) {
     const val = orderAddText.val();
+    orderAddText.val('');
+
     if (!val || val.length === 0)
         return;
 
     const btn = $(document.createElement('button'));
-    btn.attr('class', 'acds-element');
-    btn.text('-');
+    btn.attr('class', 'acds-element')
+        .text('-');
 
     const txt = $(document.createElement('input'));
-    txt.attr('type', 'text');
-    txt.attr('class', 'acds-element acds-bottom-text');
-    txt.attr('maxlength', '3');
-    txt.css('color', 'darkgray');
-    txt.css('max-width', '3rem');
-    txt.css('margin', '0px 5px 0px 5px');
+    txt.attr({ type: 'text', class: 'acds-element acds-bottom-text', maxLength: '3' })
+        .css({ color: 'darkgray', maxWidth: '3rem', margin: '0px 5px 0px 5px' });
 
     const li = $(document.createElement('li'));
-    li.attr('class', 'ui-state-default');
-    li.text(val);
-    orderAddText.val('');
+    li.attr('class', 'ui-state-default')
+        .text(val)
+        .append(txt, btn);
 
     btn.on('click', ev => li.remove());
-
-    li.append(txt);
-    li.append(btn);
 
     order.append(li);
 }
@@ -125,10 +125,7 @@ function adminAnotationsChange(event) {
         {
             method: 'POST',
             data: { value },
-            error: err => {
-                console.log(err);
-                failureToast.show();
-            }
+            error: showFailureToastMessage
         });
 }
 
@@ -202,8 +199,8 @@ socket.on('equipment changed', content => {
             newIcon.attr('class', using ? 'bi bi-check' : 'bi bi-x');
 
             const usingRow = $(document.createElement('td'));
-            usingRow.attr('id', `equipmentUsing${playerID}${equipmentID}`);
-            usingRow.append(newIcon);
+            usingRow.attr('id', `equipmentUsing${playerID}${equipmentID}`)
+                .append(newIcon);
 
             const nameRow = $(document.createElement('td'));
             nameRow.text(name);
@@ -217,13 +214,9 @@ socket.on('equipment changed', content => {
             const attacksRow = $(document.createElement('td'));
             attacksRow.text(attacks);
 
-            const newRow = $(document.createElement('tr'));
-            newRow.attr('id', `equipmentRow${playerID}${equipmentID}`);
-            newRow.append(usingRow);
-            newRow.append(nameRow);
-            newRow.append(damageRow);
-            newRow.append(rangeRow);
-            newRow.append(attacksRow);
+            const newRow = $(document.createElement('tr'))
+                .attr('id', `equipmentRow${playerID}${equipmentID}`)
+                .append(usingRow, nameRow, damageRow, rangeRow, attacksRow);
 
             $(`#equipmentTable${playerID}`).append(newRow);
             break;
@@ -248,14 +241,12 @@ socket.on('item changed', content => {
     switch (type) {
         case 'create':
             const newData = $(document.createElement('td'));
-            newData.attr('data-bs-toggle', 'tooltip');
-            newData.attr('data-bs-placement', 'top');
-            newData.attr('title', description);
-            newData.text(name);
+            newData.attr({ 'data-bs-toggle': 'tooltip', 'data-bs-placement': 'top', 'title': description })
+                .text(name);
 
             const newRow = $(document.createElement('tr'));
-            newRow.attr('id', `itemRow${playerID}${itemID}`);
-            newRow.append(newData);
+            newRow.attr('id', `itemRow${playerID}${itemID}`)
+                .append(newData);
 
             $(`#itemTable${playerID}`).append(newRow);
             break;
@@ -263,8 +254,7 @@ socket.on('item changed', content => {
             $(`#itemRow${playerID}${itemID}`).remove();
             break;
         case 'update':
-            const data = $(`#itemRow${playerID}${itemID} > td`);
-            data.attr('title', description);
+            $(`#itemRow${playerID}${itemID} > td`).attr('title', description);
             break;
     }
 });

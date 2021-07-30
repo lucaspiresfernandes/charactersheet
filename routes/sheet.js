@@ -173,7 +173,7 @@ router.get('/1', async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -193,7 +193,7 @@ router.get('/2', async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -302,7 +302,7 @@ router.get('/admin/1', async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        return res.status(500).send('Internal Server Error');
+        return res.status(500).end();
     }
 });
 
@@ -356,7 +356,7 @@ router.get('/admin/2', async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        return res.status(500).send('Internal Server Error');
+        return res.status(500).end();
     }
 })
 
@@ -367,7 +367,7 @@ router.post('/player/info', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let infoID = req.body.infoID;
     let value = req.body.value;
@@ -379,11 +379,11 @@ router.post('/player/info', urlParser, async (req, res) => {
             .andWhere('info_id', infoID);
 
         io.emit('info changed', { playerID, infoID, value });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -391,7 +391,7 @@ router.post('/player/attribute', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let attrID = req.body.attributeID;
     let value = req.body.value;
@@ -404,11 +404,11 @@ router.post('/player/attribute', urlParser, async (req, res) => {
             .andWhere('attribute_id', attrID);
 
         io.emit('attribute changed', { playerID, attributeID: attrID, value, maxValue });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -416,7 +416,7 @@ router.post('/player/attributestatus', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let attrStatusID = req.body.attributeStatusID;
     let checked = req.body.checked === 'true' ? true : false;
@@ -427,11 +427,11 @@ router.post('/player/attributestatus', urlParser, async (req, res) => {
             .where('player_id', playerID)
             .andWhere('attribute_status_id', attrStatusID);
 
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -439,7 +439,7 @@ router.post('/player/spec', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let specID = req.body.specID;
     let value = req.body.value;
@@ -451,11 +451,11 @@ router.post('/player/spec', urlParser, async (req, res) => {
             .andWhere('spec_id', specID);
 
         io.emit('spec changed', { playerID, specID, value });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -463,7 +463,7 @@ router.post('/player/characteristic', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let charID = req.body.characteristicID;
     let value = req.body.value;
@@ -474,11 +474,11 @@ router.post('/player/characteristic', urlParser, async (req, res) => {
             .andWhere('characteristic_id', charID);
 
         io.emit('characteristic changed', { playerID, charID, value });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -486,7 +486,7 @@ router.put('/player/equipment', urlParser, async (req, res) => {
     const playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     const equipmentID = req.body.equipmentID;
 
@@ -511,7 +511,7 @@ router.put('/player/equipment', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 
     try {
@@ -535,7 +535,7 @@ router.post('/player/equipment', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let equipmentID = req.body.equipmentID;
     let using = req.body.using === 'true' ? true : false;
@@ -547,11 +547,11 @@ router.post('/player/equipment', urlParser, async (req, res) => {
             .where('player_id', playerID)
             .andWhere('equipment_id', equipmentID);
         io.emit('equipment changed', { playerID, equipmentID, using, type: 'update' });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -559,7 +559,7 @@ router.delete('/player/equipment', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let equipmentID = req.body.equipmentID;
 
@@ -569,11 +569,11 @@ router.delete('/player/equipment', urlParser, async (req, res) => {
             .andWhere('equipment_id', equipmentID)
             .del();
         io.emit('equipment changed', { playerID, equipmentID, type: 'delete' });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -602,7 +602,7 @@ router.put('/equipment', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -633,11 +633,11 @@ router.post('/equipment', urlParser, async (req, res) => {
                     'malfunc': malf,
                 })
             .where('equipment_id', equipmentID);
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -651,11 +651,11 @@ router.delete('/equipment', urlParser, async (req, res) => {
         await con('equipment')
             .where('equipment_id', equipmentID)
             .del();
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -663,7 +663,7 @@ router.put('/player/skill', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let skillID = req.body.skillID;
 
@@ -691,7 +691,7 @@ router.put('/player/skill', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -699,7 +699,7 @@ router.post('/player/skill', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let skillID = req.body.skillID;
     let value = req.body.value;
@@ -711,11 +711,11 @@ router.post('/player/skill', urlParser, async (req, res) => {
             .where('player_id', playerID)
             .andWhere('skill_id', skillID);
 
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -740,7 +740,7 @@ router.put('/skill', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -767,11 +767,11 @@ router.post('/skill', urlParser, async (req, res) => {
                     'start_value': startValue,
                 })
             .where('skill_id', skillID);
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -785,11 +785,11 @@ router.delete('/skill', urlParser, async (req, res) => {
         await con('skill')
             .where('skill_id', skillID)
             .del();
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -797,7 +797,7 @@ router.post('/player/finance', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let financeID = req.body.financeID;
     let value = req.body.value;
@@ -808,11 +808,11 @@ router.post('/player/finance', urlParser, async (req, res) => {
             .where('player_id', playerID)
             .andWhere('finance_id', financeID);
 
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -820,7 +820,7 @@ router.put('/player/item', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let itemID = req.body.itemID;
 
@@ -846,7 +846,7 @@ router.put('/player/item', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 
     try {
@@ -872,7 +872,7 @@ router.post('/player/item', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let itemID = req.body.itemID;
     let description = req.body.description;
@@ -885,11 +885,11 @@ router.post('/player/item', urlParser, async (req, res) => {
 
         io.emit('item changed', { playerID, itemID, description, type: 'update' });
 
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -897,7 +897,7 @@ router.delete('/player/item', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let itemID = req.body.itemID;
 
@@ -908,11 +908,11 @@ router.delete('/player/item', urlParser, async (req, res) => {
             .del();
 
         io.emit('item changed', { playerID, itemID, type: 'delete' });
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -927,7 +927,7 @@ router.put('/item', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -948,11 +948,11 @@ router.post('/item', urlParser, async (req, res) => {
                     'description': description,
                 })
             .where('item_id', itemID);
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -966,11 +966,11 @@ router.delete('/item', urlParser, async (req, res) => {
         await con('item')
             .where('item_id', itemID)
             .del();
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -978,7 +978,7 @@ router.post('/player/extrainfo', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
 
     let extraInfoID = req.body.extraInfoID;
     let value = req.body.value;
@@ -989,11 +989,11 @@ router.post('/player/extrainfo', urlParser, async (req, res) => {
             .where('player_id', playerID)
             .andWhere('extra_info_id', extraInfoID);
 
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 });
 
@@ -1001,7 +1001,7 @@ router.post('/admin/note', urlParser, async (req, res) => {
     let playerID = req.session.playerID;
 
     if (!playerID)
-        return res.status(401).send('ID de jogador não encontrado. Você se esqueceu de logar?');
+        return res.status(401).end();
     if (!req.session.isAdmin)
         return res.status(401).render('rejected', { message: 'Não é um administrador.' });
 
@@ -1011,11 +1011,11 @@ router.post('/admin/note', urlParser, async (req, res) => {
         await con('admin_note')
             .update('value', value)
             .where('admin_id', playerID);
-        res.send('OK');
+        res.end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).end();
     }
 })
 //#endregion

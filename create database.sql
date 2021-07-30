@@ -272,12 +272,12 @@ INSERT INTO `equipment` (`name`, `skill_id`, `damage`, `range`, `attacks`, `ammo
 ('Thompson (30)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '30', '96'),
 ('Thompson (50)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10 + 2', '20 metros', '1/Auto', '50', '96'),
 ('UZI', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d10', '20 metros', '1(2)/Auto', '32', '98'),
-('Skorpion', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d8', '15 metros', '1(3)/Auto', '20', '96');
+('Skorpion', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Submetralhadoras'), '1d8', '15 metros', '1(3)/Auto', '20', '96'),
 #--Metralhadoras
-('Gatling Gun 1882', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '100 metros', 'Auto', '200', '96');
-('Browning Auto Rifle M1918', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '90 metros', '1(2)/Auto', '20', '100');
-('Browning M1917A1 .30', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '150 metros', 'Auto', '250', '96');
-('FN Minimi 5.56mm (30)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6', '110 metros', 'Auto', '30', '99');
+('Gatling Gun 1882', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '100 metros', 'Auto', '200', '96'),
+('Browning Auto Rifle M1918', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '90 metros', '1(2)/Auto', '20', '100'),
+('Browning M1917A1 .30', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6+4', '150 metros', 'Auto', '250', '96'),
+('FN Minimi 5.56mm (30)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6', '110 metros', 'Auto', '30', '99'),
 ('FN Minimi 5.56mm (200)', (SELECT `skill_id` FROM `skill` WHERE `name` = 'Metralhadoras'), '2d6', '110 metros', 'Auto', '200', '99');
 
 CREATE TABLE `player_equipment` (
@@ -332,7 +332,7 @@ INSERT INTO `item` (`name`, `description`) VALUES ('Chapa de Identificação', '
 ('Carteira', 'Uma carteira comum.'),
 ('Livro', 'Um livro comum. Descreva aqui o conteúdo do livro.'),
 ('Livro de Ocultismo', 'Um livro de ocultismo. Descreva aqui seu conteúdo.'),
-('Kit Médico', 'Um kit médico que garante vantagem no uso.');
+('Kit Médico', 'Um kit médico que garante vantagem em Primeiros Socorros/Medicina no uso.');
 
 CREATE TABLE `player_item` (
     `player_item_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,

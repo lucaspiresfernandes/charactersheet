@@ -10,13 +10,13 @@
 }
 
 body {
-    background-color: black;
-    color: white;
+    background-color: black !important;
+    color: white !important;
 }
 
 .acds-element {
-    background-color: black;
-    color: white;
+    background-color: black !important;
+    color: white !important;
 }
 
 .skill-container {
@@ -28,8 +28,8 @@ body {
 }
 
 .skill-container:hover .acds-element {
-    background-color: white;
-    color: black;
+    background-color: white !important;
+    color: black !important;
 }
 
 .skill-container .skill-label {

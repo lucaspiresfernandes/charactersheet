@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
-    
+
     <title>{{rpgname}}</title>
 </head>
 
@@ -235,8 +235,7 @@
 
     <div>
         {{> failuretoast}}
-        <div class="modal fade" id="createEquipment" tabindex="-1" aria-labelledby="createEquipmentLabel"
-            data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="createEquipment" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form autocomplete="off"
@@ -308,8 +307,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="createSkill" tabindex="-1" aria-labelledby="createSkillLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="createSkill" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form autocomplete="off" onsubmit="event.preventDefault(); createSkillClick(event); this.reset();">
@@ -358,8 +356,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="createItem" tabindex="-1" aria-labelledby="createItemLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="createItem" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form autocomplete="off" onsubmit="event.preventDefault(); createItemClick(event); this.reset();">

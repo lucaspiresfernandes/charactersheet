@@ -1,8 +1,17 @@
 const loading = $('.loading');
-const failureToast = new bootstrap.Toast($('#failureToast')[0], {delay: 5000});
 const createSkillModal = new bootstrap.Modal($('#createSkill')[0]);
 const createEquipmentModal = new bootstrap.Modal($('#createEquipment')[0]);
 const createItemModal = new bootstrap.Modal($('#createItem')[0]);
+
+const failureToast = new bootstrap.Toast($('#failureToast')[0], { delay: 4000 });
+const failureToastBody = $('#failureToast > .toast-body');
+
+//General
+function showFailureToastMessage(err) {
+    console.log(err);
+    failureToastBody.text(`Erro ao tentar aplicar mudança - ${err.text}`);
+    failureToast.show();
+}
 
 //Equipments
 const createEquipmentContainer = $('#createEquipmentContainer');
@@ -16,16 +25,14 @@ const createEquipmentSpecialization = $('#combatSpecializationList');
 const createEquipmentButton = $('#createEquipmentButton');
 const createEquipmentCloseButton = $('#createEquipmentCloseButton');
 
-$('#createEquipment').on('hidden.bs.modal', () =>
-{
+$('#createEquipment').on('hidden.bs.modal', () => {
     createEquipmentButton.prop('disabled', false);
     createEquipmentCloseButton.prop('disabled', false);
     createEquipmentContainer.show();
     loading.hide();
 });
 
-function createEquipmentClick(event)
-{
+function createEquipmentClick(event) {
     const name = createEquipmentName.val();
     const skillID = createEquipmentSpecialization.val();
     const damage = createEquipmentDamage.val();
@@ -40,16 +47,15 @@ function createEquipmentClick(event)
     loading.show();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'PUT',
-        data: {name, skillID, damage, range, attacks, ammo, malf},
-        success: (data) =>
         {
-            const id = data.equipmentID;
-            const tr = $(document.createElement('tr'));
+            method: 'PUT',
+            data: { name, skillID, damage, range, attacks, ammo, malf },
+            success: (data) => {
+                const id = data.equipmentID;
+                const tr = $(document.createElement('tr'));
 
-            tr.attr('id', `equipmentRow${id}`);
-            tr.html(`
+                tr.attr('id', `equipmentRow${id}`)
+                    .html(`
             <td>
                 <button class="acds-element"
                     onclick="equipmentDeleteClick(event, ${id})"><i
@@ -91,147 +97,105 @@ function createEquipmentClick(event)
                     onchange="equipmentMalfuncChange(event, ${id})">
             </td>
             `);
-            $('#equipmentListTable').append(tr);
+                $('#equipmentListTable').append(tr);
 
-            createEquipmentModal.hide();
-        },
-        error: (err) =>
-        {
-            createEquipmentModal.hide();
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                createEquipmentModal.hide();
+            },
+            error: (err) => {
+                createEquipmentModal.hide();
+                showFailureToastMessage(err)
+            }
+        });
 }
 
-function equipmentDeleteClick(event, id)
-{
+function equipmentDeleteClick(event, id) {
     if (!confirm("Você realmente quer remover esse equipamento?"))
         return;
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'DELETE',
-        data: {equipmentID: id},
-        success: () => $(`#equipmentRow${id}`).remove(),
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    })
+            method: 'DELETE',
+            data: { equipmentID: id },
+            success: () => $(`#equipmentRow${id}`).remove(),
+            error: showFailureToastMessage
+        })
 }
 
-function equipmentNameChange(event, id)
-{
+function equipmentNameChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, name: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, name: value },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentSkillChange(event, id)
-{
+function equipmentSkillChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, skillID: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, skillID: value },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentDamageChange(event, id)
-{
+function equipmentDamageChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, damage: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, damage: value },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentRangeChange(event, id)
-{
+function equipmentRangeChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, range: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, range: value },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentAttacksChange(event, id)
-{
+function equipmentAttacksChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, attacks: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, attacks: value },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentAmmoChange(event, id)
-{
+function equipmentAmmoChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, ammo: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, ammo: value },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentMalfuncChange(event, id)
-{
+function equipmentMalfuncChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID: id, malfunc: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID: id, malfunc: value },
+            error: showFailureToastMessage
+        });
 }
 
 //Skills
@@ -241,16 +205,14 @@ const createSkillCloseButton = $('#createSkillCloseButton');
 const createSkillName = $('#createSkillName');
 const createSkillSpecialization = $('#createSkillSpecialization');
 
-$('#createSkill').on('hidden.bs.modal', () =>
-{
+$('#createSkill').on('hidden.bs.modal', () => {
     createSkillButton.prop('disabled', false);
     createSkillCloseButton.prop('disabled', false);
     createSkillContainer.show();
     loading.hide();
 });
 
-function createSkillClick(event)
-{
+function createSkillClick(event) {
     createSkillContainer.hide();
     createSkillButton.prop('disabled', true);
     createSkillCloseButton.prop('disabled', true);
@@ -260,16 +222,16 @@ function createSkillClick(event)
     let name = createSkillName.val();
 
     $.ajax('/sheet/skill',
-    {
-        method: 'PUT',
-        data: {name, specializationID},
-        success: (data) =>
         {
-            createSkillModal.hide();
-            const id = data.skillID;
-            const tr = $(document.createElement('tr'));
+            method: 'PUT',
+            data: { name, specializationID },
+            success: (data) => {
+                createSkillModal.hide();
+                const id = data.skillID;
+                const tr = $(document.createElement('tr'));
 
-            tr.html(`
+                tr.attr('id', `skillRow${id}`)
+                    .html(`
             <td>
             <button class="acds-element" onclick="skillDeleteClick(event, ${id})"><i
                     class="bi bi-trash"></i></button>
@@ -294,100 +256,70 @@ function createSkillClick(event)
                     onchange="skillMandatoryChange(event, ${id})">
             </td>
             `);
-
-            tr.attr('id', `skillRow${id}`);
-            $('#skillListTable').append(tr);
-        },
-        error: (err) =>
-        {
-            createSkillModal.hide();
-
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                $('#skillListTable').append(tr);
+            },
+            error: (err) => {
+                createSkillModal.hide();
+                showFailureToastMessage(err)
+            }
+        });
 }
 
-function skillDeleteClick(event, id)
-{
+function skillDeleteClick(event, id) {
     if (!confirm("Você realmente quer remover essa perícia?"))
         return;
 
     $.ajax('/sheet/skill',
-    {
-        method: 'DELETE',
-        data: {skillID: id},
-        success: () => $(`#skillRow${id}`).remove(),
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    })
+            method: 'DELETE',
+            data: { skillID: id },
+            success: () => $(`#skillRow${id}`).remove(),
+            error: showFailureToastMessage
+        })
 }
 
-function skillNameChange(event, id)
-{
+function skillNameChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/skill',
-    {
-        method: 'POST',
-        data: {skillID: id, name: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { skillID: id, name: value },
+            error: showFailureToastMessage
+        });
 }
 
-function skillSpecializationChange(event, id)
-{
+function skillSpecializationChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/skill',
-    {
-        method: 'POST',
-        data: {skillID: id, specializationID: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { skillID: id, specializationID: value },
+            error: showFailureToastMessage
+        });
 }
 
-function skillStartValueChange(event, id)
-{
+function skillStartValueChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/skill',
-    {
-        method: 'POST',
-        data: {skillID: id, startValue: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { skillID: id, startValue: value },
+            error: showFailureToastMessage
+        });
 }
 
-function skillMandatoryChange(event, id)
-{
+function skillMandatoryChange(event, id) {
     const value = $(event.target).prop('checked');
 
     $.ajax('/sheet/skill',
-    {
-        method: 'POST',
-        data: {skillID: id, mandatory: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { skillID: id, mandatory: value },
+            error: showFailureToastMessage
+        });
 }
 
 //Item
@@ -397,16 +329,14 @@ const createItemCloseButton = $('#createItemCloseButton');
 const createItemName = $('#createItemName');
 const createItemDescription = $('#createItemDescription');
 
-$('#createItem').on('hidden.bs.modal', () =>
-{
+$('#createItem').on('hidden.bs.modal', () => {
     createItemButton.prop('disabled', false);
     createItemCloseButton.prop('disabled', false);
     createItemContainer.show();
     loading.hide();
 });
 
-function createItemClick(ev)
-{
+function createItemClick(ev) {
     createItemContainer.hide();
     createItemButton.prop('disabled', true);
     createItemCloseButton.prop('disabled', true);
@@ -414,19 +344,18 @@ function createItemClick(ev)
 
     const name = createItemName.val();
     const description = createItemDescription.val();
-    
-    $.ajax('/sheet/item',
-    {
-        method: 'PUT',
-        data: {name, description},
-        success: (data) =>
-        {
-            createItemModal.hide();
-            const id = data.itemID;
 
-            const tr = $(document.createElement('tr'));
-            tr.attr('id', `itemRow${id}`);
-            tr.html(`
+    $.ajax('/sheet/item',
+        {
+            method: 'PUT',
+            data: { name, description },
+            success: (data) => {
+                createItemModal.hide();
+                const id = data.itemID;
+
+                const tr = $(document.createElement('tr'));
+                tr.attr('id', `itemRow${id}`)
+                    .html(`
             <td>
                 <button class="acds-element" onclick="itemDeleteClick(event, ${id})"><i
                         class="bi bi-trash"></i></button>
@@ -441,64 +370,46 @@ function createItemClick(ev)
                 onchange="itemDescriptionChange(event, ${id})">
             </td>
             `);
-            $('#itemListTable').append(tr);
-        },
-        error: (err) =>
-        {
-            createItemModal.hide();
-
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                $('#itemListTable').append(tr);
+            },
+            error: (err) => {
+                createItemModal.hide();
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function itemDeleteClick(event, id)
-{
+function itemDeleteClick(event, id) {
     if (!confirm("Você realmente quer remover esse item?"))
         return;
 
     $.ajax('/sheet/item',
-    {
-        method: 'DELETE',
-        data: {itemID: id},
-        success: () => $(`#itemRow${id}`).remove(),
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    })
+            method: 'DELETE',
+            data: { itemID: id },
+            success: () => $(`#itemRow${id}`).remove(),
+            error: showFailureToastMessage
+        })
 }
 
-function itemNameChange(event, id)
-{
+function itemNameChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/item',
-    {
-        method: 'POST',
-        data: {itemID: id, name: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { itemID: id, name: value },
+            error: showFailureToastMessage
+        });
 }
 
-function itemDescriptionChange(event, id)
-{
+function itemDescriptionChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/item',
-    {
-        method: 'POST',
-        data: {itemID: id, description: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { itemID: id, description: value },
+            error: showFailureToastMessage
+        });
 }

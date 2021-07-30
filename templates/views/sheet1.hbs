@@ -81,8 +81,7 @@
                                         <div class="progress acds-clickable" style="background-color: #{{bg_color}};"
                                             onclick="attributeBarClick(event, {{attribute_id}})">
                                             <div id="attributeBar{{attribute_id}}" class="progress-bar"
-                                                role="progressbar" aria-valuenow="{{value}}" aria-valuemin="0"
-                                                aria-valuemax="{{max_value}}"
+                                                role="progressbar"
                                                 style="background-color: #{{fill_color}}; width: {{coeficient}}%;">
                                             </div>
                                         </div>
@@ -239,7 +238,6 @@
                 <div class="row">
                     <div class="col">
                         <input type="search" class="form-control acds-element mb-3" placeholder="Procurar"
-                            style="background-color: black !important; color: white !important"
                             oninput="skillSearchBarInput(event);" />
                     </div>
                 </div>
@@ -306,8 +304,7 @@
 
         {{> diceroll}}
 
-        <div class="modal fade" id="uploadAvatar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
-            aria-labelledby="uploadAvatarLabel" aria-hidden="true">
+        <div class="modal fade" id="uploadAvatar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form onsubmit="event.preventDefault(); uploadAvatarClick(event); this.reset();">
@@ -322,9 +319,10 @@
                                 {{#with this}}
                                 <div class="row my-3">
                                     <div class="col">
-                                        <input id="avatarLink{{avatar_id}}" type="text"
-                                            placeholder="Link de Avatar {{name}}" autocomplete="off"
-                                            style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                                        <label for="avatarLink{{avatar_id}}">Link de Avatar {{name}}</label>
+                                        <input id="avatarLink{{avatar_id}}" type="text" autocomplete="off"
+                                            class="acds-element form-control" value="{{link}}"
+                                            style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
                                     </div>
                                 </div>
                                 <script>avatarElements.set({{ avatar_id }}, $('#avatarLink{{avatar_id}}'));</script>
@@ -349,8 +347,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="createEquipment" tabindex="-1" aria-labelledby="createEquipmentLabel"
-            data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="createEquipment" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form onsubmit="event.preventDefault(); createEquipmentClick(event); this.reset();">
@@ -427,8 +424,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="createSkill" tabindex="-1" aria-labelledby="createSkillLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="createSkill" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form onsubmit="event.preventDefault(); createSkillClick(event); this.reset();">
@@ -477,8 +473,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="createItem" tabindex="-1" aria-labelledby="createItemLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="createItem" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form onsubmit="event.preventDefault(); createItemClick(event); this.reset();">
@@ -518,8 +513,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addEquipment" tabindex="-1" aria-labelledby="addEquipmentLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="addEquipment" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -561,8 +555,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addSkill" tabindex="-1" aria-labelledby="addSkillLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="addSkill" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -601,8 +594,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addItem" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal fade" id="addItem" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">

@@ -4,32 +4,29 @@ const router = express.Router();
 const con = require('../utils/connection');
 const bodyParser = require('body-parser');
 const urlParser = bodyParser.urlencoded(
-{
-    extended: false
-});
+    {
+        extended: false
+    });
 
-router.get('/', (req, res) =>
-{
+router.get('/', (req, res) => {
     res.render('login');
 });
 
-router.post('/', urlParser, async(req, res) =>
-{
-    try
-    {
+router.post('/', urlParser, async (req, res) => {
+    try {
         let username = req.body.username;
         let password = req.body.password;
 
         if (!username || !password)
-            return res.status(400).send('Usuário ou senha não foram processados corretamente.');
+            return res.status(400).end();
 
         let result = await con.select('player.player_id', 'player.password', 'player.admin')
-        .from('player')
-        .where('username', username)
-        .first();
+            .from('player')
+            .where('username', username)
+            .first();
 
         if (!result)
-            return res.status(401).send('Usuário ou senha incorretos.');
+            return res.status(401).end();
 
         let hashword = result.password;
         let id = result.player_id;
@@ -37,17 +34,16 @@ router.post('/', urlParser, async(req, res) =>
         let exists = await encrypter.compare(password, hashword);
 
         if (!exists)
-            return res.status(401).send('Usuário ou senha incorretos.');
+            return res.status(401).end();
 
         req.session.playerID = id;
         req.session.isAdmin = admin;
 
-        res.send({admin});
+        res.send({ admin });
     }
-    catch (err)
-    {
+    catch (err) {
         console.log(err);
-        res.status(500).send({err});
+        res.status(500).end();
     }
 });
 

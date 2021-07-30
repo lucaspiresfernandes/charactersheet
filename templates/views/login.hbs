@@ -22,33 +22,28 @@
     <script>
         const loginForm = $('#loginForm');
 
-        function onLoginSuccess(data)
-        {
+        function onLoginSuccess(data) {
             let admin = data.admin;
-            
-            const success = document.createElement('p');
-            $(success).css('color', 'green');
-            $(success).css('font-size', 24);
-            $(success).text(`Logado com sucesso! Redirecionando para a ficha...`);
+
+            const success = $(document.createElement('p'));
+            success.css({ color: 'green', fontSize: '24' })
+                .text(`Logado com sucesso! Redirecionando para a ficha...`);
             $('body').append(success);
-            
+
             let url = admin ? '/sheet/admin/1' : '/sheet/1';
             window.location.replace(url);
         }
 
-        function onLoginFail(err)
-        {
+        function onLoginFail(err) {
             const errorElement = document.createElement('p');
             const error = $(errorElement);
 
-            error.css('color', 'red');
-            error.css('font-size', 24);
-            error.text(`Erro: ${err.responseText}`);
+            error.css({ color: 'red', fontSize: '24' })
+                .text(`Erro: ${err.responseText}`);
 
             $('body').append(errorElement);
 
-            setTimeout(() =>
-            {
+            setTimeout(() => {
                 error.fadeOut(2000, () => error.remove());
             }, 500);
 
@@ -57,8 +52,7 @@
             loginForm.show();
         }
 
-        loginForm.submit(ev =>
-        {
+        loginForm.submit(ev => {
             ev.preventDefault();
 
             loginForm.hide();
@@ -70,12 +64,12 @@
             pass.val('')
 
             $.ajax('/login',
-            {
-                method: 'POST',
-                data: {username, password},
-                success: onLoginSuccess,
-                error: onLoginFail
-            });
+                {
+                    method: 'POST',
+                    data: { username, password },
+                    success: onLoginSuccess,
+                    error: onLoginFail
+                });
         });
 
     </script>

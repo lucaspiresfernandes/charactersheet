@@ -16,127 +16,112 @@ const createEquipmentModal = new bootstrap.Modal($('#createEquipment')[0]);
 const addItemModal = new bootstrap.Modal($('#addItem')[0]);
 const createItemModal = new bootstrap.Modal($('#createItem')[0]);
 
-const failureToast = new bootstrap.Toast($('#failureToast')[0], {delay: 4000});
+const failureToast = new bootstrap.Toast($('#failureToast')[0], { delay: 4000 });
+const failureToastBody = $('#failureToast > .toast-body');
 
 //General
-function rollDice(num = -1, showBranches = true, callback)
-{
+function showFailureToastMessage(err) {
+    console.log(err);
+    failureToastBody.text(`Erro ao tentar aplicar mudança - ${err.text}`);
+    failureToast.show();
+}
+
+function rollDice(num = -1, showBranches = true, callback) {
     diceRollModal.show();
     loading.show();
 
-    function onSuccess(data)
-    {
+    function onSuccess(data) {
         let roll = data.num;
         const successType = resolveSuccessType(num, roll, showBranches);
         loading.hide();
-        diceResultContent.text(roll);
-        diceResultContent.fadeIn('slow', () =>
-        {
-            if (num === -1)
-                return;
-            
-            diceResultDescription.text(successType.description);
-            diceResultDescription.fadeIn('slow');
-        });
-        
-        if (callback)
-            callback(successType);
+
+        diceResultContent.text(roll)
+            .fadeIn('slow', () => {
+                if (num === -1)
+                    return;
+
+                diceResultDescription.text(successType.description)
+                    .fadeIn('slow');
+            });
+
+        if (callback) callback(successType);
     }
 
-    $.ajax('/dice/single', 
-    {
-        data: {max: diceRollMax},
-        success: onSuccess,
-        error: err =>
+    $.ajax('/dice/single',
         {
-            failureToast.show();
-            console.log(err);
-        }
-    });
+            data: { max: diceRollMax },
+            success: onSuccess,
+            error: showFailureToastMessage
+        });
 }
 
-function rollDices(dices)
-{
+function rollDices(dices) {
     loading.show();
-    function onSuccess(data)
-    {
-        console.log(data);
+    function onSuccess(data) {
         let sum = data.sum;
         let results = data.results;
 
         loading.hide();
-        diceResultContent.text(sum);
-        diceResultContent.fadeIn('slow', () =>
-        {
-            if (results.length <= 1)
-                return;
-            
-            diceResultDescription.text(results.join(' + '));
-            diceResultDescription.fadeIn('slow');
-        });
+        diceResultContent.text(sum)
+            .fadeIn('slow', () => {
+                if (results.length <= 1)
+                    return;
+
+                diceResultDescription.text(results.join(' + '))
+                    .fadeIn('slow');
+            });
     }
 
-    $.ajax('/dice/multiple', 
-    {
-        data: {dices},
-        success: onSuccess,
-        error: err =>
+    $.ajax('/dice/multiple',
         {
-            failureToast.show();
-            console.log(err);
-        }
-    });
+            data: { dices },
+            success: onSuccess,
+            error: showFailureToastMessage
+        });
 }
 
-$('#diceRoll').on('hidden.bs.modal', ev =>
-{
-    diceResultContent.text('');
-    diceResultContent.hide();
-    diceResultDescription.text('');
-    diceResultDescription.hide();
+$('#diceRoll').on('hidden.bs.modal', ev => {
+    diceResultContent.text('')
+        .hide();
+    diceResultDescription.text('')
+        .hide();
 })
 
-function resolveSuccessType(num, roll, showBranches)
-{
-    if (showBranches)
-    {
+function resolveSuccessType(num, roll, showBranches) {
+    if (showBranches) {
         if (roll === 100)
-            return {description: 'Desastre', isSuccess: false};
+            return { description: 'Desastre', isSuccess: false };
         if (roll === 1)
-            return {description: 'Perfeito', isSuccess: true};
+            return { description: 'Perfeito', isSuccess: true };
         if (roll <= num * extremeRate)
-            return {description: 'Extremo', isSuccess: true};
+            return { description: 'Extremo', isSuccess: true };
         if (roll <= num * goodRate)
-            return {description: 'Bom', isSuccess: true};
+            return { description: 'Bom', isSuccess: true };
     }
     if (roll <= num)
-        return {description: 'Sucesso', isSuccess: true};
+        return { description: 'Sucesso', isSuccess: true };
     if (roll > num)
-        return {description: 'Fracasso', isSuccess: false};
+        return { description: 'Fracasso', isSuccess: false };
 
-    return {description: 'Unknown', isSuccess: false};
+    return { description: 'Unknown', isSuccess: false };
 }
 
-function resolveDices(str)
-{
+function resolveDices(str) {
     let dices = str.replace(/\s+/g, '').toLowerCase().split('+');
     let arr = [];
-    for (let i = 0; i < dices.length; i++)
-    {
+    for (let i = 0; i < dices.length; i++) {
         const dice = dices[i];
         resolveDice(dice, arr);
     }
     return arr;
 }
 
-function resolveDice(dice, arr)    
-{
-    if (dice.includes('db/'))
-    {
+function resolveDice(dice, arr) {
+    if (dice.includes('db/')) {
         let div = parseInt(dice.split('/')[1]);
         if (isNaN(div))
             div = 1;
-        
+
         const db = specs.get('Dano Bônus');
         const split = db.split('d');
         let text = '';
@@ -145,26 +130,25 @@ function resolveDice(dice, arr)
             text = Math.round(parseInt(split[0]) / div).toString();
         else
             text = `${split[0]}d${Math.round(parseInt(split[1]) / div)}`;
-        
+
         return resolveDice(text, arr);
     }
-    if(dice.includes('db'))
+    if (dice.includes('db'))
         return resolveDice(specs.get('Dano Bônus'), arr);
-    
+
     let split = dice.split('d');
 
     if (split.length === 1)
-        return arr.push({n: 0, num: dice});
+        return arr.push({ n: 0, num: dice });
 
     let n = parseInt(split[0]);
     if (isNaN(n))
         n = 1;
     let num = parseInt(split[1]);
-    arr.push({n, num});
+    arr.push({ n, num });
 }
 
-function clamp(n, min, max)
-{
+function clamp(n, min, max) {
     if (n < min)
         return min;
     if (n > max)
@@ -172,21 +156,18 @@ function clamp(n, min, max)
     return n;
 }
 
-function resolveAttributeBar(now, max, bar)
-{
+function resolveAttributeBar(now, max, bar) {
     let coeficient = (now / max) * 100;
     bar.css('width', `${coeficient}%`);
 }
 
 const generalDiceText = $('#generalDiceText');
 
-$('#generalDiceRoll').on('shown.bs.modal', ev =>
-{
+$('#generalDiceRoll').on('shown.bs.modal', ev => {
     generalDiceText[0].focus();
 });
 
-function generalDiceClick(event)
-{
+function generalDiceClick(event) {
     let dices = resolveDices(generalDiceText.val());
     rollDices(dices);
     generalDiceModal.hide();
@@ -195,20 +176,15 @@ function generalDiceClick(event)
 }
 
 //Info
-function infoChange(ev, infoID)
-{
+function infoChange(ev, infoID) {
     let value = $(ev.target).val();
 
     $.ajax('/sheet/player/info',
-    {
-        method: 'POST',
-        data: {infoID, value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { infoID, value },
+            error: showFailureToastMessage
+        });
 }
 
 //Avatar
@@ -218,16 +194,14 @@ const uploadAvatarContainer = $('#uploadAvatarContainer');
 const uploadAvatarButton = $('#uploadAvatarButton');
 const uploadAvatarCloseButton = $('#uploadAvatarCloseButton');
 
-$('#uploadAvatar').on('hidden.bs.modal', () =>
-{
+$('#uploadAvatar').on('hidden.bs.modal', () => {
     uploadAvatarButton.prop('disabled', false);
     uploadAvatarCloseButton.prop('disabled', false);
     uploadAvatarContainer.show();
     loading.hide();
 });
 
-function uploadAvatarClick(event)
-{
+function uploadAvatarClick(event) {
     uploadAvatarButton.prop('disabled', true);
     uploadAvatarCloseButton.prop('disabled', true);
     uploadAvatarContainer.hide();
@@ -235,8 +209,7 @@ function uploadAvatarClick(event)
 
     const avatars = [];
 
-    for (let [key, value] of avatarElements)
-    {
+    for (let [key, value] of avatarElements) {
         const id = key;
         let link = value.val();
         if (!link)
@@ -252,51 +225,40 @@ function uploadAvatarClick(event)
     }
 
     $.ajax('/avatar',
-    {
-        method: 'POST',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(avatars),
-        success: () =>
         {
-            loadAvatarLinks(avatars);
+            method: 'POST',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(avatars),
+            success: () => {
+                loadAvatarLinks(avatars);
 
-            uploadAvatarModal.hide();
-        },
-        error: err =>
-        {
-            uploadAvatarModal.hide();
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                uploadAvatarModal.hide();
+            },
+            error: err => {
+                uploadAvatarModal.hide();
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function evaluateAvatar()
-{
+function evaluateAvatar() {
     const unc = avatarEval.get(1);
     const mw = avatarEval.get(2);
-    let ins = avatarEval.get(3);
-    if (!ins)
-        ins = avatarEval.get(4);
+    const ins = avatarEval.get(3) || avatarEval.get(4);
 
-    if (unc)
-        return avatarImage.attr('src', avatarLinks.get(2));
-    if (mw)
-        return avatarImage.attr('src', (ins ? avatarLinks.get(5) : avatarLinks.get(3)));
-    if (ins)
-        return avatarImage.attr('src', avatarLinks.get(4));
-    
-    return avatarImage.attr('src', avatarLinks.get(1));
+    let src = avatarLinks.get(1);
+    if (unc) src = avatarLinks.get(2);
+    if (mw) src = ins ? avatarLinks.get(5) : avatarLinks.get(3);
+    if (ins) src = avatarLinks.get(4);
 
+    avatarImage.attr('src', src);
 }
 
-async function loadAvatarLinks(data)
-{
-    if(!data)
+async function loadAvatarLinks(data) {
+    if (!data)
         data = (await $.get('/avatar')).avatars;
 
-    for (let i = 0; i < data.length; i++)
-    {
+    for (let i = 0; i < data.length; i++) {
         const el = data[i];
         avatarLinks.set(el.avatar_id, el.link);
     }
@@ -306,8 +268,7 @@ async function loadAvatarLinks(data)
 $(document).ready(() => loadAvatarLinks());
 
 //Attributes
-function attributeBarClick(ev, attributeID)
-{
+function attributeBarClick(ev, attributeID) {
     let desc = $(`#attributeDesc${attributeID}`);
 
     let split = desc.text().split('/');
@@ -322,24 +283,18 @@ function attributeBarClick(ev, attributeID)
     let newCur = clamp(cur, 0, newMax);
 
     $.ajax('/sheet/player/attribute',
-    {
-        method: 'POST',
-        data: {attributeID, value: newCur, maxValue: newMax},
-        success : data =>
         {
-            desc.text(`${newCur}/${newMax}`);
-            resolveAttributeBar(newCur, newMax, $(`#attributeBar${attributeID}`));
-        },
-        error: err =>
-        {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { attributeID, value: newCur, maxValue: newMax },
+            success: data => {
+                desc.text(`${newCur}/${newMax}`);
+                resolveAttributeBar(newCur, newMax, $(`#attributeBar${attributeID}`));
+            },
+            error: showFailureToastMessage
+        });
 }
 
-function attributeIncreaseClick(ev, attributeID)
-{
+function attributeIncreaseClick(ev, attributeID) {
     const desc = $(`#attributeDesc${attributeID}`);
 
     let diff = 1;
@@ -361,23 +316,20 @@ function attributeIncreaseClick(ev, attributeID)
     resolveAttributeBar(newCur, max, bar);
 
     $.ajax('/sheet/player/attribute',
-    {
-        method: 'POST',
-        data: {attributeID, value: newCur},
-        error: err =>
         {
-            desc.text(`${cur}/${max}`);
-            resolveAttributeBar(cur, max, bar);
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { attributeID, value: newCur },
+            error: err => {
+                desc.text(`${cur}/${max}`);
+                resolveAttributeBar(cur, max, bar);
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function attributeDecreaseClick(ev, attributeID)
-{
+function attributeDecreaseClick(ev, attributeID) {
     const desc = $(`#attributeDesc${attributeID}`);
-    
+
     let diff = 1;
     if (ev.shiftKey)
         diff = 10;
@@ -396,21 +348,18 @@ function attributeDecreaseClick(ev, attributeID)
     resolveAttributeBar(newCur, max, bar);
 
     $.ajax('/sheet/player/attribute',
-    {
-        method: 'POST',
-        data: {attributeID, value: newCur},
-        error: err =>
         {
-            desc.text(`${cur}/${max}`);
-            resolveAttributeBar(cur, max, bar);
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { attributeID, value: newCur },
+            error: err => {
+                desc.text(`${cur}/${max}`);
+                resolveAttributeBar(cur, max, bar);
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function attributeDiceClick(ev, id)
-{
+function attributeDiceClick(ev, id) {
     let desc = $(`#attributeDesc${id}`);
     let split = desc.text().split('/');
 
@@ -420,58 +369,42 @@ function attributeDiceClick(ev, id)
 }
 
 //Attribute Status
-function attributeStatusChange(ev, attributeStatusID)
-{
+function attributeStatusChange(ev, attributeStatusID) {
     const checked = $(ev.target).prop('checked');
     avatarEval.set(attributeStatusID, checked);
     evaluateAvatar();
     $.ajax('/sheet/player/attributestatus',
-    {
-        method: 'POST',
-        data: {attributeStatusID, checked},
-        error: (err) =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { attributeStatusID, checked },
+            error: showFailureToastMessage
+        });
 }
 
 //Specs
-function specChange(ev, specID)
- {
+function specChange(ev, specID) {
     let value = $(ev.target).val();
     $.ajax('/sheet/player/spec',
-    {
-        method: 'POST',
-        data: {specID, value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
- }
+            method: 'POST',
+            data: { specID, value },
+            error: showFailureToastMessage
+        });
+}
 
 //Characteristics
-function characteristicChange(ev, characteristicID)
-{
+function characteristicChange(ev, characteristicID) {
     let value = $(ev.target).val();
 
     $.ajax('/sheet/player/characteristic',
-    {
-        method: 'POST',
-        data: {characteristicID, value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { characteristicID, value },
+            error: showFailureToastMessage
+        });
 }
 
-function characteristicDiceClick(ev, id)
-{
+function characteristicDiceClick(ev, id) {
     let num = $(`#characteristic${id}`).val();
     rollDice(num);
 }
@@ -496,24 +429,21 @@ const createEquipmentSpecialization = $('#combatSpecializationList');
 const createEquipmentButton = $('#createEquipmentButton');
 const createEquipmentCloseButton = $('#createEquipmentCloseButton');
 
-$('#createEquipment').on('hidden.bs.modal', () =>
-{
+$('#createEquipment').on('hidden.bs.modal', () => {
     createEquipmentButton.prop('disabled', false);
     createEquipmentCloseButton.prop('disabled', false);
     createEquipmentContainer.show();
     loading.hide();
 });
 
-$('#addEquipment').on('hidden.bs.modal', () =>
-{
+$('#addEquipment').on('hidden.bs.modal', () => {
     addEquipmentCloseButton.prop('disabled', false);
     addEquipmentCreate.prop('disabled', false);
     addEquipmentContainer.show();
     loading.hide();
 });
 
-function addEquipmentClick(event)
-{
+function addEquipmentClick(event) {
     addEquipmentButton.prop('disabled', true);
     addEquipmentCloseButton.prop('disabled', true);
     addEquipmentCreate.prop('disabled', true);
@@ -523,59 +453,49 @@ function addEquipmentClick(event)
     let equipmentID = addEquipmentList.val();
 
     $.ajax('/sheet/player/equipment',
-    {
-        method: 'PUT',
-        data: {equipmentID},
-        success: (data) =>
         {
-            addEquipmentModal.hide();
+            method: 'PUT',
+            data: { equipmentID },
+            success: (data) => {
+                addEquipmentModal.hide();
 
-            $(`#addEquipmentOption${equipmentID}`).remove();
-            
-            equipmentTable.append(data.html);
+                $(`#addEquipmentOption${equipmentID}`).remove();
 
-            addEquipmentButton.prop('disabled', addEquipmentList.children().length === 0);
-        },
-        error: (err) =>
-        {
-            addEquipmentModal.hide();
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                equipmentTable.append(data.html);
+
+                addEquipmentButton.prop('disabled', addEquipmentList.children().length === 0);
+            },
+            error: err => {
+                addEquipmentModal.hide();
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function deleteEquipmentClick(event, equipmentID)
-{
+function deleteEquipmentClick(event, equipmentID) {
     if (!confirm("Você realmente quer remover esse equipamento?"))
         return;
 
     $.ajax('/sheet/player/equipment',
-    {
-        method: 'DELETE',
-        data: {equipmentID},
-        success: () =>
         {
-            const opt = $(document.createElement('option'));
-            opt.attr('id', `addEquipmentOption${equipmentID}`);
-            opt.val(equipmentID);
-            opt.text($(`#equipmentName${equipmentID}`).text());
+            method: 'DELETE',
+            data: { equipmentID },
+            success: () => {
+                const opt = $(document.createElement('option'));
+                opt.attr('id', `addEquipmentOption${equipmentID}`);
+                opt.val(equipmentID);
+                opt.text($(`#equipmentName${equipmentID}`).text());
 
-            addEquipmentList.append(opt);
-            $(`#equipmentRow${equipmentID}`).remove();
+                addEquipmentList.append(opt);
+                $(`#equipmentRow${equipmentID}`).remove();
 
-            addEquipmentButton.prop('disabled', false);
-        },
-        error: (err) =>
-        {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                addEquipmentButton.prop('disabled', false);
+            },
+            error: showFailureToastMessage
+        });
 }
 
-function createEquipmentClick(event)
-{
+function createEquipmentClick(event) {
     const name = createEquipmentName.val();
     const skillID = createEquipmentSpecialization.val();
     const damage = createEquipmentDamage.val();
@@ -590,59 +510,48 @@ function createEquipmentClick(event)
     loading.show();
 
     $.ajax('/sheet/equipment',
-    {
-        method: 'PUT',
-        data: {name, skillID, damage, range, attacks, ammo, malf},
-        success: (data) =>
         {
-            const id = data.equipmentID;
-            const opt = $(document.createElement('option'));
-            opt.attr('id', `addEquipmentOption${id}`);
-            opt.val(id);
-            opt.text(name);
-            
-            createEquipmentModal.hide();
-            addEquipmentList.append(opt);
-            addEquipmentButton.prop('disabled', false);
-        },
-        error: (err) =>
-        {
-            createEquipmentModal.hide();
+            method: 'PUT',
+            data: { name, skillID, damage, range, attacks, ammo, malf },
+            success: (data) => {
+                const id = data.equipmentID;
+                const opt = $(document.createElement('option'));
+                opt.attr('id', `addEquipmentOption${id}`);
+                opt.val(id);
+                opt.text(name);
 
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                createEquipmentModal.hide();
+                addEquipmentList.append(opt);
+                addEquipmentButton.prop('disabled', false);
+            },
+            error: err => {
+                createEquipmentModal.hide();
+
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function equipmentUsingChange(ev, equipmentID)
-{
+function equipmentUsingChange(ev, equipmentID) {
     const using = $(ev.target).prop('checked');
     $.ajax('/sheet/player/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID, using},
-        error: (err) =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID, using },
+            error: showFailureToastMessage
+        });
 }
 
-function equipmentAmmoChange(ev, equipmentID)
-{
+function equipmentAmmoChange(ev, equipmentID) {
     const currentAmmo = $(ev.target);
     let curAmmo = parseInt(currentAmmo.val());
     let maxAmmo = parseInt($(`#equipmentMaxAmmo${equipmentID}`).text());
 
-    if (isNaN(maxAmmo))
-    {
+    if (isNaN(maxAmmo)) {
         currentAmmo.val('-');
         return alert('Esse equipamento não possui munição.');
     }
-    else if (curAmmo > maxAmmo)
-    {
+    else if (curAmmo > maxAmmo) {
         currentAmmo.val('-');
         return alert('Você não pode ter mais balas do que a capacidade do equipamento.');
     }
@@ -650,25 +559,22 @@ function equipmentAmmoChange(ev, equipmentID)
     postCurrentAmmo(equipmentID, currentAmmo.val());
 }
 
-function equipmentDiceClick(ev, id)
-{
+function equipmentDiceClick(ev, id) {
     const using = $(`#equipmentUsing${id}`).prop('checked');
 
     if (!using)
         return alert('Você não está usando esse equipamento.');
-    
+
     const damageField = $(`#equipmentDamage${id}`);
     const ammoTxt = $(`#equipmentAmmo${id}`);
 
     let ammo = parseInt(ammoTxt.val());
     let maxAmmo = parseInt($(`#equipmentMaxAmmo${id}`).text());
 
-    if (!isNaN(maxAmmo))
-    {
+    if (!isNaN(maxAmmo)) {
         if (isNaN(ammo) || ammo <= 0)
             return alert('Você não tem munição para isso.');
-        else
-        {
+        else {
             ammoTxt.val(--ammo);
             postCurrentAmmo(id, ammo);
         }
@@ -679,18 +585,13 @@ function equipmentDiceClick(ev, id)
     rollDices(dmg);
 }
 
-function postCurrentAmmo(equipmentID, currentAmmo)
-{
+function postCurrentAmmo(equipmentID, currentAmmo) {
     $.ajax('/sheet/player/equipment',
-    {
-        method: 'POST',
-        data: {equipmentID, currentAmmo},
-        error: (err) =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { equipmentID, currentAmmo },
+            error: showFailureToastMessage
+        });
 }
 
 
@@ -712,24 +613,21 @@ const createSkillCloseButton = $('#createSkillCloseButton');
 const createSkillName = $('#createSkillName');
 const createSkillSpecialization = $('#createSkillSpecialization');
 
-$('#createSkill').on('hidden.bs.modal', () =>
-{
+$('#createSkill').on('hidden.bs.modal', () => {
     createSkillButton.prop('disabled', false);
     createSkillCloseButton.prop('disabled', false);
     createSkillContainer.show();
     loading.hide();
 });
 
-$('#addSkill').on('hidden.bs.modal', () =>
-{
+$('#addSkill').on('hidden.bs.modal', () => {
     addSkillContainer.show();
     addSkillCreateButton.prop('disabled', false);
     addSkillCloseButton.prop('disabled', false);
     loading.hide();
 });
 
-function createSkillClick(event)
-{
+function createSkillClick(event) {
     createSkillContainer.hide();
     createSkillButton.prop('disabled', true);
     createSkillCloseButton.prop('disabled', true);
@@ -739,34 +637,30 @@ function createSkillClick(event)
     let name = createSkillName.val();
 
     $.ajax('/sheet/skill',
-    {
-        method: 'PUT',
-        data: {name, specializationID},
-        success: (data) =>
         {
-            createSkillModal.hide();
+            method: 'PUT',
+            data: { name, specializationID },
+            success: (data) => {
+                createSkillModal.hide();
 
-            const id = data.skillID;
-            const opt = $(document.createElement('option'));
-            opt.attr('id', `createSkillOption${id}`);
-            opt.val(id);
-            opt.text(name);
-            addSkillList.append(opt);
+                const id = data.skillID;
+                const opt = $(document.createElement('option'));
+                opt.attr('id', `createSkillOption${id}`);
+                opt.val(id);
+                opt.text(name);
+                addSkillList.append(opt);
 
-            addSkillButton.prop('disabled', false);
-        },
-        error: (err) =>
-        {
-            createSkillModal.hide();
+                addSkillButton.prop('disabled', false);
+            },
+            error: err => {
+                createSkillModal.hide();
 
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function addSkillClick(ev)
-{
+function addSkillClick(ev) {
     addSkillContainer.hide();
     addSkillButton.prop('disabled', true);
     addSkillCloseButton.prop('disabled', true);
@@ -776,110 +670,90 @@ function addSkillClick(ev)
     let skillID = addSkillList.val();
 
     $.ajax('/sheet/player/skill',
-    {
-        method: 'PUT',
-        data: {skillID},
-        success: (data) =>
         {
-            addSkillModal.hide();
+            method: 'PUT',
+            data: { skillID },
+            success: (data) => {
+                addSkillModal.hide();
 
-            $(`#addSkillOption${skillID}`).remove();
-            skillTable.append(data.html);
+                $(`#addSkillOption${skillID}`).remove();
+                skillTable.append(data.html);
 
-            addSkillButton.prop('disabled', addSkillList.children().length === 0);
-        },
-        error: (err) =>
-        {
-            addSkillModal.hide();
+                addSkillButton.prop('disabled', addSkillList.children().length === 0);
+            },
+            error: err => {
+                addSkillModal.hide();
 
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function skillSearchBarInput(ev)
-{
+function skillSearchBarInput(ev) {
     const searchBar = $(ev.target);
-    
-    if (searchBar.val() === '')
-    {
+
+    if (searchBar.val() === '') {
         for (let i = 0; i < skillsContainer.length; i++)
             skillsContainer[i].hidden = false;
         return;
     }
 
     let str = searchBar.val().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    for (let i = 0; i < skillsContainer.length; i++)
-    {
+    for (let i = 0; i < skillsContainer.length; i++) {
         const cont = skillsContainer[i];
         let txt = skillLabels[i].textContent.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         cont.hidden = !txt.includes(str);
     }
 }
 
-function skillChange(event, id)
-{
+function skillChange(event, id) {
     const value = $(event.target).val();
 
     $.ajax('/sheet/player/skill',
-    {
-        method: 'POST',
-        data: {skillID: id, value: value},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { skillID: id, value: value },
+            error: err => {
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function skillCheckChange(event, id)
-{
+function skillCheckChange(event, id) {
     const checked = $(event.target).prop('checked');
-    
+
     $.ajax('/sheet/player/skill',
-    {
-        method: 'POST',
-        data: {skillID: id, checked: checked},
-        error: err =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { skillID: id, checked: checked },
+            error: err => {
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function skillDiceClick(event, id)
-{
+function skillDiceClick(event, id) {
     const num = $(`#skill${id}`).val();
 
-    rollDice(parseInt(num), true, type =>
-    {
-        if (type.isSuccess)
-        {
+    rollDice(parseInt(num), true, type => {
+        if (type.isSuccess) {
             const skillCheck = $(`#skillCheck${id}`);
-            skillCheck.prop('checked', true);
-            skillCheck.trigger('change');
+            skillCheck.prop('checked', true)
+                .trigger('change');
         }
     });
 }
 
 //Finances
-function financeChange(ev, financeID)
-{
+function financeChange(ev, financeID) {
     const value = $(ev.target).val();
 
     $.ajax('/sheet/player/finance',
-    {
-        method: 'POST',
-        data: {financeID, value},
-        error: (err) =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+            method: 'POST',
+            data: { financeID, value },
+            error: showFailureToastMessage
+        });
 }
 
 //Items
@@ -897,24 +771,21 @@ const createItemCloseButton = $('#createItemCloseButton');
 const createItemName = $('#createItemName');
 const createItemDescription = $('#createItemDescription');
 
-$('#createItem').on('hidden.bs.modal', () =>
-{
+$('#createItem').on('hidden.bs.modal', () => {
     createItemButton.prop('disabled', false);
     createItemCloseButton.prop('disabled', false);
     createItemContainer.show();
     loading.hide();
 });
 
-$('#addItem').on('hidden.bs.modal', () =>
-{
+$('#addItem').on('hidden.bs.modal', () => {
     addItemContainer.show();
     addItemCreateButton.prop('disabled', false);
     addItemCloseButton.prop('disabled', false);
     loading.hide();
 });
 
-function addItemClick(ev)
-{
+function addItemClick(ev) {
     addItemContainer.hide();
     addItemButton.prop('disabled', true);
     addItemCloseButton.prop('disabled', true);
@@ -922,32 +793,28 @@ function addItemClick(ev)
     loading.show();
 
     let itemID = addItemList.val();
-    
+
     $.ajax('/sheet/player/item',
-    {
-        method: 'PUT',
-        data: {itemID},
-        success: (data) =>
         {
-            addItemModal.hide();
+            method: 'PUT',
+            data: { itemID },
+            success: (data) => {
+                addItemModal.hide();
 
-            $(`#addItemOption${itemID}`).remove();
-            itemTable.append(data.html);
+                $(`#addItemOption${itemID}`).remove();
+                itemTable.append(data.html);
 
-            addItemButton.prop('disabled', addItemList.children().length === 0);
-        },
-        error: (err) =>
-        {
-            addItemModal.hide();
+                addItemButton.prop('disabled', addItemList.children().length === 0);
+            },
+            error: err => {
+                addItemModal.hide();
 
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function createItemClick(ev)
-{
+function createItemClick(ev) {
     createItemContainer.hide();
     createItemButton.prop('disabled', true);
     createItemCloseButton.prop('disabled', true);
@@ -956,73 +823,59 @@ function createItemClick(ev)
     const name = createItemName.val();
     const description = createItemDescription.val();
     $.ajax('/sheet/item',
-    {
-        method: 'PUT',
-        data: {name, description},
-        success: (data) =>
         {
-            createItemModal.hide();
+            method: 'PUT',
+            data: { name, description },
+            success: (data) => {
+                createItemModal.hide();
 
-            const id = data.itemID;
-            const opt = $(document.createElement('option'));
-            opt.attr('id', `addItemOption${id}`);
-            opt.val(id);
-            opt.text(name);
-            addItemList.append(opt);
+                const id = data.itemID;
+                const opt = $(document.createElement('option'));
+                opt.attr('id', `addItemOption${id}`);
+                opt.val(id);
+                opt.text(name);
+                addItemList.append(opt);
 
-            addItemButton.prop('disabled', false);
-        },
-        error: (err) =>
-        {
-            createItemModal.hide();
+                addItemButton.prop('disabled', false);
+            },
+            error: err => {
+                createItemModal.hide();
 
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                showFailureToastMessage(err);
+            }
+        });
 }
 
-function deleteItemClick(event, itemID)
-{
+function deleteItemClick(event, itemID) {
     if (!confirm("Você realmente quer remover esse equipamento?"))
         return;
 
     $.ajax('/sheet/player/item',
-    {
-        method: 'DELETE',
-        data: {itemID},
-        success: (data) =>
         {
-            const opt = $(document.createElement('option'));
-            opt.attr('id', `addItemOption${itemID}`);
-            opt.val(itemID);
-            opt.text($(`#itemName${itemID}`).text());
-            addItemList.append(opt);
+            method: 'DELETE',
+            data: { itemID },
+            success: (data) => {
+                const opt = $(document.createElement('option'));
+                opt.attr('id', `addItemOption${itemID}`);
+                opt.val(itemID);
+                opt.text($(`#itemName${itemID}`).text());
+                addItemList.append(opt);
 
-            $(`#itemRow${itemID}`).remove();
-            
-            addItemButton.prop('disabled', false);
-        },
-        error: (err) =>
-        {
-            console.log(err);
-            failureToast.show();
-        }
-    });
+                $(`#itemRow${itemID}`).remove();
+
+                addItemButton.prop('disabled', false);
+            },
+            error: showFailureToastMessage
+        });
 }
 
-function itemDescriptionChange(ev, itemID)
-{
+function itemDescriptionChange(ev, itemID) {
     const description = $(ev.target).val();
 
     $.ajax('/sheet/player/item',
-    {
-        method: 'POST',
-        data: {itemID, description},
-        error: (err) =>
         {
-            console.log(err);
-            failureToast.show();
-        }
-    })
+            method: 'POST',
+            data: { itemID, description },
+            error: showFailureToastMessage
+        })
 }
