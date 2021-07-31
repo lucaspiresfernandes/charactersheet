@@ -248,8 +248,8 @@ function evaluateAvatar() {
 
     let src = avatarLinks.get(1);
     if (unc) src = avatarLinks.get(2);
-    if (mw) src = ins ? avatarLinks.get(5) : avatarLinks.get(3);
-    if (ins) src = avatarLinks.get(4);
+    else if (mw) src = ins ? avatarLinks.get(5) : avatarLinks.get(3);
+    else if (ins) src = avatarLinks.get(4);
 
     avatarImage.attr('src', src);
 }
