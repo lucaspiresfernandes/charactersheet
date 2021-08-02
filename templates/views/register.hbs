@@ -32,13 +32,13 @@
 
         function validatePassword() {
             if (pass.val() != confirmPass.val())
-                confirmPass[0].setCustomValidity("As senhas não coincidem.");
+                confirmPass[ 0 ].setCustomValidity("As senhas não coincidem.");
             else
-                confirmPass[0].setCustomValidity('');
+                confirmPass[ 0 ].setCustomValidity('');
         }
 
-        pass[0].onchange = validatePassword;
-        confirmPass[0].onkeyup = validatePassword;
+        pass[ 0 ].onchange = validatePassword;
+        confirmPass[ 0 ].onkeyup = validatePassword;
 
         function onRegisterSuccess() {
             const success = $(document.createElement('p'));
@@ -75,26 +75,22 @@
 
             const username = $('#username').val();
             const password = pass.val();
+            const adminKey = $('#adminKey').val();
             pass.val('');
 
             confirmPass.val('');
 
-            const data = { username, password };
-            { {#if admin } }
-            const adminKey = $('#adminKey').val();
-            data.adminKey = adminKey;
-            {
-                {
-                    /if}}
+            const data = { username, password, adminKey };
 
-                    $.ajax('/register',
-                        {
-                            method: 'POST',
-                            data: data,
-                            success: onRegisterSuccess,
-                            error: onRegisterFail
-                        });
+            $.ajax('/register',
+                {
+                    method: 'POST',
+                    data: data,
+                    success: onRegisterSuccess,
+                    error: onRegisterFail
                 });
+        });
+        
     </script>
 </body>
 

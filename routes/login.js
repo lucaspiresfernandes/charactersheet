@@ -26,7 +26,7 @@ router.post('/', urlParser, async (req, res) => {
             .first();
 
         if (!result)
-            return res.status(401).end();
+            return res.status(403).send('Usuário ou senha incorretos.');
 
         let hashword = result.password;
         let id = result.player_id;
@@ -34,7 +34,7 @@ router.post('/', urlParser, async (req, res) => {
         let exists = await encrypter.compare(password, hashword);
 
         if (!exists)
-            return res.status(401).end();
+            return res.status(403).send('Usuário ou senha incorretos.');
 
         req.session.playerID = id;
         req.session.isAdmin = admin;
@@ -43,7 +43,7 @@ router.post('/', urlParser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).end();
+        res.status(500).send('500: Fatal Error');
     }
 });
 
