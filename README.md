@@ -18,7 +18,7 @@ O SQL para criar o banco de dados está nomeado como "create database.sql", e po
 
 Há uma rota escondida só pra mestres, que é "/register/admin", onde a chave do mestre/adm é "123456", como definida no banco de dados.
 
-É possível fazer um playtest em https://charactersheet-demo.herokuapp.com/.
+É possível fazer um playtest em https://acdsrpg.herokuapp.com/.
 
 ## Imagens
 
