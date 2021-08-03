@@ -36,7 +36,7 @@ async function registerPost(req, res) {
         let results = await con.select('username').from('player').where('username', username).first();
 
         if (results)
-            return res.status(401).end();
+            return res.status(401).send('Username already exists.');
 
         let admin = false;
 
@@ -47,7 +47,7 @@ async function registerPost(req, res) {
             if (originalAdminKey === adminKey)
                 admin = true;
             else
-                return res.status(401).end();
+                return res.status(401).send('Admin key is incorrect.');
         }
 
         let hash = await encrypter.encrypt(password);
@@ -68,7 +68,7 @@ async function registerPost(req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).end();
+        res.status(500).send('500: Fatal Error');
     }
 }
 

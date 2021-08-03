@@ -271,9 +271,9 @@ const diceList = $('#diceList');
 
 socket.on('dice roll', content => {
     let id = content.playerID;
-    let player = playerNames.get(id);
-    if (!player)
-        player = 'Desconhecido';
+    let playerName = playerNames.get(id);
+    if (!playerName)
+        playerName = 'Desconhecido';
 
     let num = content.num;
     let max = content.max;
@@ -302,18 +302,18 @@ socket.on('dice roll', content => {
 
     const children = diceList.children();
     if (children.length > 10)
-        children[0].remove();
+        children[children.length - 1].remove();
 
     const li = $(document.createElement('li'));
 
     switch (type) {
         case 'single':
-            li.html(`<span style="color:red;">${player}</span> rolou <span style="color:green;">1d${max}</span> 
+            li.html(`<span style="color:red;">${playerName}</span> rolou <span style="color:green;">1d${max}</span> 
             e tirou <span style="color:green;">${num}</span>.`);
             diceList.prepend(li);
             break;
         case 'multiple':
-            li.html(`<span style="color:red;">${player}</span> rolou <span style="color:green;">${dices.join(', ')}</span> e 
+            li.html(`<span style="color:red;">${playerName}</span> rolou <span style="color:green;">${dices.join(', ')}</span> e 
             tirou <span style="color:green;">${results.join(', ')}</span>, somando <span style="color:green;">${sum}</span>.`);
             diceList.prepend(li);
             break;
