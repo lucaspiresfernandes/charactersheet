@@ -161,18 +161,30 @@ function resolveAttributeBar(now, max, bar) {
     bar.css('width', `${coeficient}%`);
 }
 
-const generalDiceText = $('#generalDiceText');
-
-$('#generalDiceRoll').on('shown.bs.modal', ev => {
-    generalDiceText[0].focus();
-});
+$('#generalDiceRoll').on('hidden.bs.modal', ev => $(".general-dice-roll").text("0"));
 
 function generalDiceClick(event) {
-    let dices = resolveDices(generalDiceText.val());
+    const diceElements = $('.general-dice-roll');
+
+    const dicesArray = [];
+    for (const dice of diceElements)
+    {
+        const el = $(dice);
+        const n = el.text().trim();
+
+        if (n === '0')
+            continue;
+
+        const num = el.attr('dice');
+        dicesArray.push(`${n}d${num}`);
+    }
+    const dicesText = dicesArray.join('+');
+
+    const dices = resolveDices(dicesText);
     rollDices(dices);
+
     generalDiceModal.hide();
     diceRollModal.show();
-    generalDiceText.val('');
 }
 
 //Info

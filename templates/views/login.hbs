@@ -31,7 +31,7 @@
             $('body').append(success);
 
             let url = admin ? '/sheet/admin/1' : '/sheet/1';
-            window.location.replace(url);
+            location.replace(url);
         }
 
         function onLoginFail(err) {
@@ -61,7 +61,7 @@
 
             const username = $('#username').val();
             const password = pass.val();
-            pass.val('')
+            pass.val('')ç
 
             $.ajax('/login',
                 {

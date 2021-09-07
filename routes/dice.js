@@ -15,10 +15,9 @@ async function nextInt(min, max, n) {
 
     min = Math.ceil(min);
     max = Math.floor(max);
-    for (let i = 0; i < n; i++) {
-        let generated = Math.floor(Math.random() * (max - min + 1) + min);
-        data.push(generated);
-    }
+    
+    for (let i = 0; i < n; i++)
+        data.push(Math.floor(Math.random() * (max - min + 1) + min));
 
     return { data };
 }

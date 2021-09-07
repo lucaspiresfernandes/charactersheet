@@ -4,14 +4,133 @@
             <div class="modal-header">
                 <h5 class="modal-title">Dado Personalizado</h5>
             </div>
-            <div class="modal-body text-center" style="background-color: black; border: none; height: 100px;">
-                <div class="container-fluid ">
-                    <div class="row">
-                        <div class="col">
-                            <form onsubmit="event.preventDefault(); generalDiceClick(event); this.reset();">
-                                <input class="acds-element form-control" id="generalDiceText" type="text"
-                                    autocomplete="off" placeholder="Dado" required>
-                            </form>
+            <div class="modal-body" style="background-color: black; border: none;">
+                <div class="container-fluid">
+                    <div class="row text-center justify-content-center">
+                        <div class="col-4 my-2">
+                            <div class="row mb-2">
+                                <div class="col-8 mx-auto">
+                                    <img title="1D4" class="img-fluid" src="/assets/dice4.png">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="-"
+                                        onclick="$('#dice4').text(Math.max(0, parseInt($('#dice4').text()) - 1))">
+                                </div>
+                                <div id="dice4" class="col align-self-center general-dice-roll" dice="4">
+                                    0
+                                </div>
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="+"
+                                        onclick="$('#dice4').text(Math.max(0, parseInt($('#dice4').text()) + 1))">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-4 my-2">
+                            <div class="row mb-2">
+                                <div class="col-8 mx-auto">
+                                    <img title="1D6" class="img-fluid" src="/assets/dice6.png">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="-"
+                                        onclick="$('#dice6').text(Math.max(0, parseInt($('#dice6').text()) - 1))">
+                                </div>
+                                <div id="dice6" class="col align-self-center general-dice-roll" dice="6">
+                                    0
+                                </div>
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="+"
+                                        onclick="$('#dice6').text(Math.max(0, parseInt($('#dice6').text()) + 1))">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4 my-2">
+                            <div class="row mb-2">
+                                <div class="col-8 mx-auto">
+                                    <img title="1D8" class="img-fluid" src="/assets/dice8.png">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="-"
+                                        onclick="$('#dice8').text(Math.max(0, parseInt($('#dice8').text()) - 1))">
+                                </div>
+                                <div id="dice8" class="col align-self-center general-dice-roll" dice="8">
+                                    0
+                                </div>
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="+"
+                                        onclick="$('#dice8').text(Math.max(0, parseInt($('#dice8').text()) + 1))">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4 my-2">
+                            <div class="row mb-2">
+                                <div class="col-8 mx-auto">
+                                    <img title="1D10" class="img-fluid" src="/assets/dice10.png">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="-"
+                                        onclick="$('#dice10').text(Math.max(0, parseInt($('#dice10').text()) - 1))">
+                                </div>
+                                <div id="dice10" class="col align-self-center general-dice-roll" dice="10">
+                                    0
+                                </div>
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="+"
+                                        onclick="$('#dice10').text(Math.max(0, parseInt($('#dice10').text()) + 1))">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4 my-2">
+                            <div class="row mb-2">
+                                <div class="col-8 mx-auto">
+                                    <img title="1D12" class="img-fluid" src="/assets/dice12.png">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="-"
+                                        onclick="$('#dice12').text(Math.max(0, parseInt($('#dice12').text()) - 1))">
+                                </div>
+                                <div id="dice12" class="col align-self-center general-dice-roll" dice="12">
+                                    0
+                                </div>
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="+"
+                                        onclick="$('#dice12').text(Math.max(0, parseInt($('#dice12').text()) + 1))">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4 my-2">
+                            <div class="row mb-2">
+                                <div class="col-8 mx-auto">
+                                    <img title="1D20" class="img-fluid" src="/assets/dice.png">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="-"
+                                        onclick="$('#dice20').text(Math.max(0, parseInt($('#dice20').text()) - 1))">
+                                </div>
+                                <div id="dice20" class="col align-self-center general-dice-roll" dice="20">
+                                    0
+                                </div>
+                                <div class="col">
+                                    <input class="btn btn-secondary" type="button" value="+"
+                                        onclick="$('#dice20').text(Math.max(0, parseInt($('#dice20').text()) + 1))">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

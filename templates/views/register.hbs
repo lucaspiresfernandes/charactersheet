@@ -80,12 +80,10 @@
 
             confirmPass.val('');
 
-            const data = { username, password, adminKey };
-
             $.ajax('/register',
                 {
                     method: 'POST',
-                    data: data,
+                    data: { username, password, adminKey },
                     success: onRegisterSuccess,
                     error: onRegisterFail
                 });
