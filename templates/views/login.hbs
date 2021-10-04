@@ -35,13 +35,12 @@
         }
 
         function onLoginFail(err) {
-            const errorElement = document.createElement('p');
-            const error = $(errorElement);
+            const error = $(document.createElement('p'));
 
             error.css({ color: 'red', fontSize: '24' })
                 .text(`Erro: ${err.responseText}`);
 
-            $('body').append(errorElement);
+            $('body').append(error);
 
             setTimeout(() => {
                 error.fadeOut(2000, () => error.remove());
