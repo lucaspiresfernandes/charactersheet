@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const RandomOrg = require('random-org');
-const apiKey = process.env.RANDOM_ORG_KEY;
+const apiKey = process.env.RANDOM_ORG_KEY || 'unkown';
 const random = new RandomOrg({ apiKey: apiKey });
 const io = require('../server').io;
 
