@@ -2,10 +2,12 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const registerHelpers = require('./utils/registerHelpers');
-const session = require('express-session');
 const { Server } = require('socket.io');
 const hbs = require('hbs');
 const hbsutils = require('hbs-utils')(hbs);
+const expressSession = require('express-session');
+const SessionStore = require('connect-session-knex')(expressSession);
+const con = require('./utils/connection');
 
 const app = express();
 const server = http.createServer(app);
@@ -20,7 +22,19 @@ app.set('view engine', 'hbs');
 app.set('views', viewsPath);
 hbsutils.registerPartials(partialsPath, { precompile: true });
 app.use(express.static(publicPath));
-app.use(session({ secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: false, cookie: { sameSite: 'strict' } }));
+app.use(expressSession({
+    secret: process.env.EXPRESS_SESSION_SECRET || 'unkown',
+    cookie: {
+        sameSite: 'strict',
+        maxAge: 86400000,
+    },
+    resave: true,
+    saveUninitialized: false,
+    store: new SessionStore({
+        tablename: 'player_session',
+        knex: con,
+    }),
+}));
 
 registerHelpers();
 
