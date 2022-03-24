@@ -1,3 +1,7 @@
+# ATENÇÃO! Projeto descontinuado
+
+Esse projeto foi descontinuado. Confira seu novo [sucessor](https://github.com/alyssapiresfernandescefet/openrpg).
+
 # Ficha de Personagem (Character Sheet)
 
 ## Aplicativo Web feito para jogadores e mestres, inspirado por "Ordem Paranormal" de Cellbit, e em Call of Cthulhu.
